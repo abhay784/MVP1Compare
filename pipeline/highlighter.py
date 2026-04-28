@@ -1,16 +1,18 @@
-"""Full-page highlight overlay — draws coloured boxes (and dimension circles)
-on a rendered drawing page to show where each view's changes are located.
+"""Full-page highlight overlay — paints translucent highlighter strokes on
+the actual changed lines of a rendered drawing page.
 
 Companion to pipeline/annotator.py:
 - annotator builds side-by-side crop pairs for the per-view PDF report sections.
-- highlighter draws on the full-page render so the user can see where on the
-  drawing each change happens.
+- highlighter marks up the full-page render so the user can see exactly
+  which lines on the drawing changed.
 
 The comparator does NOT emit per-change pixel coordinates, so granularity is:
-  - View-level: one box per view that has any changes, severity-coloured.
-  - Dimension-level: when a change's orig/revised value matches a dimension
-    string extracted for that view, a tighter ellipse is drawn on the
-    dimension's bbox.
+  - Line-level: when a change's orig/revised value fuzzy-matches a dimension
+    string extracted for that view, a translucent severity-coloured highlight
+    is painted across that dimension line (marker-pen style).
+  - Per-view tag: a small severity-coloured tag is placed at the view's
+    top-left corner so the reader can locate the affected view at a glance.
+    No bounding box is drawn around the view itself.
 """
 from __future__ import annotations
 
@@ -36,8 +38,10 @@ _SEVERITY_RGB = {
 }
 _SEVERITY_RANK = {"CRITICAL": 3, "MAJOR": 2, "MINOR": 1, "UNCERTAIN": 0}
 
-_VIEW_BOX_WIDTH_PX = 6
-_DIM_ELLIPSE_WIDTH_PX = 4
+_HIGHLIGHT_ALPHA = 90              # translucency for marker-pen fill (0–255)
+_HIGHLIGHT_PAD_PX = 10             # extra padding around the dimension bbox
+_HIGHLIGHT_OUTLINE_ALPHA = 200     # crisper edge so highlights don't look smudged
+_HIGHLIGHT_OUTLINE_WIDTH_PX = 2
 _LABEL_PADDING_PX = 6
 _DIM_MATCH_RATIO = 90  # rapidfuzz threshold for matching change values to dimension strings
 
@@ -70,6 +74,21 @@ def _bbox_to_pixels(bbox_pts: list[float], scale: float) -> tuple[int, int, int,
     x0, y0, x1, y1 = bbox_pts
     return (round(x0 * scale), round(y0 * scale),
             round(x1 * scale), round(y1 * scale))
+
+
+def _draw_line_highlight(draw: ImageDraw.ImageDraw,
+                         x0: int, y0: int, x1: int, y1: int,
+                         colour: tuple[int, int, int]) -> None:
+    """Paint a translucent marker-pen highlight across one changed line.
+
+    A filled RGBA rectangle (low alpha) gives the highlighter look; a slim
+    higher-alpha outline keeps the edge crisp at print resolution.
+    """
+    pad = _HIGHLIGHT_PAD_PX
+    rect = [x0 - pad, y0 - pad, x1 + pad, y1 + pad]
+    draw.rectangle(rect, fill=(*colour, _HIGHLIGHT_ALPHA))
+    draw.rectangle(rect, outline=(*colour, _HIGHLIGHT_OUTLINE_ALPHA),
+                   width=_HIGHLIGHT_OUTLINE_WIDTH_PX)
 
 
 def _draw_label(draw: ImageDraw.ImageDraw, x: int, y: int,
@@ -132,7 +151,8 @@ def highlight_page(
     views_by_index = {v["index"]: v for v in views_extraction}
     index_field = "orig_index" if side == "original" else "rev_index"
 
-    drawn = 0
+    views_with_changes = 0
+    lines_highlighted = 0
     for vd in view_diffs:
         if vd.get("match_type") in _SKIP_MATCH_TYPES:
             continue
@@ -150,14 +170,13 @@ def highlight_page(
         sev = _max_severity(vd.get("changes", [])) or "UNCERTAIN"
         colour = _SEVERITY_RGB.get(sev, _SEVERITY_RGB["UNCERTAIN"])
 
-        x0, y0, x1, y1 = _bbox_to_pixels(bbox_pts, scale)
-        draw.rectangle([x0, y0, x1, y1], outline=colour, width=_VIEW_BOX_WIDTH_PX)
-
+        # Per-view tag at the top-left corner — replaces the old surrounding box.
+        x0, y0, _x1, _y1 = _bbox_to_pixels(bbox_pts, scale)
         change_count = len(vd.get("changes", []))
         label = f"{vd.get('label', 'view')}  •  {change_count} change{'s' if change_count != 1 else ''}  •  {sev}"
         _draw_label(draw, x0, max(0, y0 - 50), label, colour, label_font)
 
-        # Dimension-level refinement when a change targets a known dimension string.
+        # Highlighter-pen marks on each change line we can locate to a dimension.
         dimensions = view.get("dimensions", []) or []
         for c in vd.get("changes", []):
             value_for_side = c.get("orig_value") if side == "original" else c.get("revised_value")
@@ -165,13 +184,15 @@ def highlight_page(
             if dim_bbox is None:
                 continue
             dx0, dy0, dx1, dy1 = _bbox_to_pixels(dim_bbox, scale)
-            pad = 12
-            draw.ellipse([dx0 - pad, dy0 - pad, dx1 + pad, dy1 + pad],
-                         outline=colour, width=_DIM_ELLIPSE_WIDTH_PX)
+            _draw_line_highlight(draw, dx0, dy0, dx1, dy1, colour)
+            lines_highlighted += 1
 
-        drawn += 1
+        views_with_changes += 1
 
-    log.info("highlight_page (%s): drew overlays for %d view(s)", side, drawn)
+    log.info(
+        "highlight_page (%s): tagged %d view(s); highlighted %d change line(s)",
+        side, views_with_changes, lines_highlighted,
+    )
 
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)
