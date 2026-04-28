@@ -1,0 +1,38 @@
+# DrawDiff — pinned per PRD Appendix A / §7.4 tech stack.
+# API layer
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-multipart==0.0.12
+pydantic==2.9.2
+
+# Job queue + cache
+redis==5.1.1
+rq==1.16.2
+
+# PDF parsing + rendering
+pymupdf==1.27.2.3
+Pillow==10.4.0
+opencv-python==4.10.0.84
+numpy==1.26.4
+
+# OCR fallback
+boto3==1.35.40              # AWS Textract client
+
+# View matching
+rapidfuzz==3.10.0
+
+# LLM
+anthropic==0.39.0
+
+# Report rendering
+Jinja2==3.1.4
+weasyprint==62.3
+pydyf==0.10.0              # 0.11+ removed Stream.transform, breaking weasyprint 62.3
+
+# Utilities
+python-dotenv==1.0.1
+
+# Testing
+pytest==8.3.3
+pytest-asyncio==0.24.0
+httpx==0.27.2

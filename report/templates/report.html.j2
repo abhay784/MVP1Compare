@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DrawDiff — {{ part_number }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0.5in;
+      @bottom-center {
+        content: "DrawDiff — AI-generated. Requires human verification.  |  Page " counter(page) " of " counter(pages);
+        font-size: 9pt;
+        color: #888;
+      }
+    }
+    body { font-family: "DejaVu Sans", Helvetica, sans-serif; color: #222; font-size: 10pt; line-height: 1.35; }
+    h1 { font-size: 20pt; margin: 0 0 4pt 0; }
+    h2 { font-size: 13pt; margin: 18pt 0 6pt 0; border-bottom: 1px solid #999; padding-bottom: 2pt; }
+    h3 { font-size: 11pt; margin: 12pt 0 4pt 0; }
+    .meta { color: #666; font-size: 9pt; margin-bottom: 12pt; }
+    .watermark { color: #b30000; font-weight: bold; font-size: 9pt; }
+
+    .summary { display: table; width: 100%; margin: 6pt 0 12pt 0; }
+    .summary .cell { display: table-cell; padding: 6pt; text-align: center; border: 1px solid #ccc; }
+    .sev-CRITICAL    { background: #fde2e2; color: #900; }
+    .sev-SIGNIFICANT { background: #fff1d6; color: #7a4a00; }
+    .sev-MINOR       { background: #eceff1; color: #333; }
+    .sev-UNCERTAIN   { background: #fff8c4; color: #665500; }
+    .summary .count { font-size: 22pt; font-weight: bold; display: block; }
+
+    table { width: 100%; border-collapse: collapse; margin: 4pt 0 10pt 0; }
+    th, td { border: 1px solid #bbb; padding: 4pt 6pt; text-align: left; vertical-align: top; font-size: 9.5pt; }
+    th { background: #f3f3f3; }
+    .diff { background: #fff6d6; }
+
+    .view-img { width: 100%; max-width: 100%; margin: 6pt 0; }
+    .match-type { color: #666; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .page-img { width: 100%; max-width: 100%; margin: 4pt 0 12pt 0; border: 1px solid #ccc; }
+    .page-caption { font-size: 9.5pt; color: #555; margin-bottom: 2pt; }
+    .page-row { display: table; width: 100%; margin-bottom: 14pt; }
+    .page-row .page-col { display: table-cell; width: 50%; padding-right: 6pt; vertical-align: top; }
+    .page-row .page-col:last-child { padding-right: 0; padding-left: 6pt; }
+    .orphan-section { margin-top: 10pt; }
+    .annot-legend { margin: 4pt 0 10pt 0; font-size: 9pt; }
+    .annot-legend .swatch { display: inline-block; width: 14pt; height: 9pt; vertical-align: middle; margin-right: 4pt; border-radius: 2pt; }
+    .swatch-CRITICAL    { background: rgb(220,38,38); }
+    .swatch-SIGNIFICANT { background: rgb(234,88,12); }
+    .swatch-MINOR       { background: rgb(202,138,4); }
+    .swatch-UNCERTAIN   { background: rgb(107,114,128); }
+
+    .legend li { margin-bottom: 3pt; }
+    .notes { white-space: pre-wrap; background: #fafafa; border-left: 3px solid #ccc; padding: 4pt 8pt; font-size: 9.5pt; }
+  </style>
+</head>
+<body>
+
+<h1>DrawDiff Comparison Report</h1>
+<div class="meta">
+  <strong>Part number:</strong> {{ part_number }}
+  &nbsp;|&nbsp;
+  <strong>Job:</strong> {{ job_id }}
+  &nbsp;|&nbsp;
+  <strong>Generated:</strong> {{ generated_at }}
+</div>
+{% if notes %}
+<div class="notes">{{ notes }}</div>
+{% endif %}
+
+<h2>Summary</h2>
+<div class="summary">
+  <div class="cell sev-CRITICAL">
+    <span class="count">{{ summary.critical }}</span> Critical
+  </div>
+  <div class="cell sev-SIGNIFICANT">
+    <span class="count">{{ summary.significant }}</span> Significant
+  </div>
+  <div class="cell sev-MINOR">
+    <span class="count">{{ summary.minor }}</span> Minor
+  </div>
+  <div class="cell sev-UNCERTAIN">
+    <span class="count">{{ summary.uncertain }}</span> Uncertain
+  </div>
+  <div class="cell">
+    <span class="count">{{ summary.total_views_compared }}</span> Views compared
+  </div>
+</div>
+
+<h2>Title Block</h2>
+<table>
+  <thead>
+    <tr><th>Field</th><th>Original</th><th>Revised</th></tr>
+  </thead>
+  <tbody>
+    {% set fields = ["part_number", "revision", "material", "tolerance", "drawn_by", "date"] %}
+    {% for f in fields %}
+      {% set ov = orig_title_block.get(f, "") or "" %}
+      {% set rv = rev_title_block.get(f, "") or "" %}
+      <tr {% if ov != rv %}class="diff"{% endif %}>
+        <td><strong>{{ f }}</strong></td>
+        <td>{{ ov }}</td>
+        <td>{{ rv }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Revision Block</h2>
+{% set orig_set = orig_revision_entries | map('string') | list %}
+{% set rev_set  = rev_revision_entries  | map('string') | list %}
+<h3>Added in revised</h3>
+{% set added = rev_revision_entries | rejectattr('0', 'in', orig_set) | list %}
+{% if rev_revision_entries %}
+<ul>
+  {% for entry in rev_revision_entries %}
+    {% if entry not in orig_revision_entries %}
+      <li>{{ entry }}</li>
+    {% endif %}
+  {% endfor %}
+</ul>
+{% else %}
+<p><em>No revision entries on revised drawing.</em></p>
+{% endif %}
+
+<h3>Removed from original</h3>
+{% if orig_revision_entries %}
+<ul>
+  {% for entry in orig_revision_entries %}
+    {% if entry not in rev_revision_entries %}
+      <li>{{ entry }}</li>
+    {% endif %}
+  {% endfor %}
+</ul>
+{% else %}
+<p><em>No revision entries on original drawing.</em></p>
+{% endif %}
+
+<h2>Annotated Drawings</h2>
+{% if page_pairs or orphan_original_pages or orphan_revised_pages %}
+<p class="annot-legend">
+  Severity:
+  <span class="swatch swatch-CRITICAL"></span>Critical
+  &nbsp;
+  <span class="swatch swatch-SIGNIFICANT"></span>Significant
+  &nbsp;
+  <span class="swatch swatch-MINOR"></span>Minor
+  &nbsp;
+  <span class="swatch swatch-UNCERTAIN"></span>Uncertain
+</p>
+{% for pair in page_pairs %}
+  <div class="page-caption"><strong>Sheet {{ pair.page_num }}</strong> — boxes mark views with detected changes.</div>
+  <div class="page-row">
+    <div class="page-col">
+      <div class="page-caption">Original</div>
+      {% if pair.orig_b64 %}<img class="page-img" src="{{ pair.orig_b64 }}" alt="Original sheet {{ pair.page_num }}">{% else %}<p><em>Not available.</em></p>{% endif %}
+    </div>
+    <div class="page-col">
+      <div class="page-caption">Revised</div>
+      {% if pair.rev_b64 %}<img class="page-img" src="{{ pair.rev_b64 }}" alt="Revised sheet {{ pair.page_num }}">{% else %}<p><em>Not available.</em></p>{% endif %}
+    </div>
+  </div>
+{% endfor %}
+{% if orphan_original_pages %}
+  <div class="orphan-section">
+    <div class="page-caption"><strong>Sheets present in original only</strong></div>
+    {% for p in orphan_original_pages %}
+      <div class="page-caption">Original sheet {{ p.page_num }}</div>
+      <img class="page-img" src="{{ p.b64 }}" alt="Original sheet {{ p.page_num }}">
+    {% endfor %}
+  </div>
+{% endif %}
+{% if orphan_revised_pages %}
+  <div class="orphan-section">
+    <div class="page-caption"><strong>Sheets present in revised only</strong></div>
+    {% for p in orphan_revised_pages %}
+      <div class="page-caption">Revised sheet {{ p.page_num }}</div>
+      <img class="page-img" src="{{ p.b64 }}" alt="Revised sheet {{ p.page_num }}">
+    {% endfor %}
+  </div>
+{% endif %}
+{% else %}
+<p><em>No annotated drawings available.</em></p>
+{% endif %}
+
+<h2>View-by-view Changes</h2>
+{% if not view_sections %}
+<p><em>No per-view differences detected.</em></p>
+{% endif %}
+{% for view in view_sections %}
+  <h3>{{ view.label }} <span class="match-type">[{{ view.match_type }}]</span></h3>
+  {% if view.image_b64 %}
+    <img class="view-img" src="{{ view.image_b64 }}" alt="{{ view.label }}">
+  {% endif %}
+  {% if view.changes %}
+    <table>
+      <thead>
+        <tr>
+          <th>Severity</th><th>Field</th><th>Original</th><th>Revised</th>
+          <th>Conf.</th><th>Rationale</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in view.changes %}
+          <tr class="sev-{{ c.severity | sev_display }}">
+            <td><strong>{{ c.severity | sev_display }}</strong></td>
+            <td>{{ c.field }}</td>
+            <td>{{ c.orig_value if c.orig_value is not none else "—" }}</td>
+            <td>{{ c.revised_value if c.revised_value is not none else "—" }}</td>
+            <td>{{ "%.2f"|format(c.confidence) }}</td>
+            <td>{{ c.rationale }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p><em>No textual changes recorded for this view.</em></p>
+  {% endif %}
+{% endfor %}
+
+<h2>Legend</h2>
+<ul class="legend">
+  {% for label, definition in legend %}
+    <li><span class="sev-{{ label }}"><strong>{{ label }}</strong></span> — {{ definition }}</li>
+  {% endfor %}
+</ul>
+
+<p class="watermark">⚠ AI-generated — requires human verification before release to manufacturing.</p>
+
+</body>
+</html>
