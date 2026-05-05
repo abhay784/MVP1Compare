@@ -332,21 +332,30 @@ def run_comparison(job_id: str, part_number: str, notes: str) -> None:
         }
 
         # Build annotated side-by-side PNGs per non-text-only view.
+        orig_views_by_idx = {v["index"]: v for v in orig_data["views"]}
+        rev_views_by_idx  = {v["index"]: v for v in rev_data["views"]}
         view_images: dict[int, bytes] = {}
         for i, vd in enumerate(changeset_dict["view_diffs"]):
             mt = vd["match_type"]
             if mt in ("title_block", "revision_block"):
                 continue
 
-            orig_key = f"crops/{job_id}/original/view_{vd.get('orig_index', i):02d}.png" \
-                if vd.get("orig_index") is not None else None
-            rev_key = f"crops/{job_id}/revised/view_{vd.get('rev_index', i):02d}.png" \
-                if vd.get("rev_index") is not None else None
+            orig_idx = vd.get("orig_index")
+            rev_idx  = vd.get("rev_index")
+            orig_key = f"crops/{job_id}/original/view_{orig_idx:02d}.png" \
+                if orig_idx is not None else None
+            rev_key = f"crops/{job_id}/revised/view_{rev_idx:02d}.png" \
+                if rev_idx is not None else None
 
             orig_png = _download(orig_key) if orig_key else None
             rev_png = _download(rev_key) if rev_key else None
 
-            view_images[i] = build_side_by_side(orig_png, rev_png, vd["label"])
+            view_images[i] = build_side_by_side(
+                orig_png, rev_png, vd["label"],
+                changes=vd.get("changes") or [],
+                orig_view=orig_views_by_idx.get(orig_idx) if orig_idx is not None else None,
+                rev_view=rev_views_by_idx.get(rev_idx)   if rev_idx  is not None else None,
+            )
 
         # Build per-page highlighted renders — one highlight pass per page per side.
         orig_keys = orig_data["page_s3_keys"]

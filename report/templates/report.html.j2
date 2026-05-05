@@ -36,6 +36,15 @@
     .view-img { width: 100%; max-width: 100%; margin: 6pt 0; }
     .match-type { color: #666; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; }
 
+    /* A view section may span multiple pages: keep the heading with its image,
+       but allow the change table that follows to flow onto the next page so
+       wide drawings can render at full size without crowding. */
+    .view-section { page-break-inside: auto; margin-top: 14pt; }
+    .view-heading { page-break-after: avoid; }
+    .view-img-wrap { page-break-inside: avoid; page-break-after: auto; margin-bottom: 6pt; }
+    .view-changes-table { page-break-before: auto; page-break-inside: auto; }
+    .view-changes-table tr { page-break-inside: avoid; }
+
     .page-img { width: 100%; max-width: 100%; margin: 4pt 0 12pt 0; border: 1px solid #ccc; }
     .page-caption { font-size: 9.5pt; color: #555; margin-bottom: 2pt; }
     .page-row { display: table; width: 100%; margin-bottom: 14pt; }
@@ -187,34 +196,38 @@
 <p><em>No per-view differences detected.</em></p>
 {% endif %}
 {% for view in view_sections %}
-  <h3>{{ view.label }} <span class="match-type">[{{ view.match_type }}]</span></h3>
-  {% if view.image_b64 %}
-    <img class="view-img" src="{{ view.image_b64 }}" alt="{{ view.label }}">
-  {% endif %}
-  {% if view.changes %}
-    <table>
-      <thead>
-        <tr>
-          <th>Severity</th><th>Field</th><th>Original</th><th>Revised</th>
-          <th>Conf.</th><th>Rationale</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for c in view.changes %}
-          <tr class="sev-{{ c.severity | sev_display }}">
-            <td><strong>{{ c.severity | sev_display }}</strong></td>
-            <td>{{ c.field }}</td>
-            <td>{{ c.orig_value if c.orig_value is not none else "—" }}</td>
-            <td>{{ c.revised_value if c.revised_value is not none else "—" }}</td>
-            <td>{{ "%.2f"|format(c.confidence) }}</td>
-            <td>{{ c.rationale }}</td>
+  <div class="view-section">
+    <h3 class="view-heading">{{ view.label }} <span class="match-type">[{{ view.match_type }}]</span></h3>
+    {% if view.image_b64 %}
+      <div class="view-img-wrap">
+        <img class="view-img" src="{{ view.image_b64 }}" alt="{{ view.label }}">
+      </div>
+    {% endif %}
+    {% if view.changes %}
+      <table class="view-changes-table">
+        <thead>
+          <tr>
+            <th>Severity</th><th>Field</th><th>Original</th><th>Revised</th>
+            <th>Conf.</th><th>Rationale</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p><em>No textual changes recorded for this view.</em></p>
-  {% endif %}
+        </thead>
+        <tbody>
+          {% for c in view.changes %}
+            <tr class="sev-{{ c.severity | sev_display }}">
+              <td><strong>{{ c.severity | sev_display }}</strong></td>
+              <td>{{ c.field }}</td>
+              <td>{{ c.orig_value if c.orig_value is not none else "—" }}</td>
+              <td>{{ c.revised_value if c.revised_value is not none else "—" }}</td>
+              <td>{{ "%.2f"|format(c.confidence) }}</td>
+              <td>{{ c.rationale }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p><em>No textual changes recorded for this view.</em></p>
+    {% endif %}
+  </div>
 {% endfor %}
 
 <h2>Legend</h2>

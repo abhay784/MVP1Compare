@@ -387,6 +387,8 @@ def run_comparison_local(
         _stage(job_id, "annotating + report", 95)
 
         # Side-by-side per non-text-only view
+        orig_views_by_idx = {v["index"]: v for v in orig_views}
+        rev_views_by_idx  = {v["index"]: v for v in rev_views}
         view_images: dict[int, bytes] = {}
         for i, vd in enumerate(changeset_dict["view_diffs"]):
             if vd["match_type"] in ("title_block", "revision_block"):
@@ -400,7 +402,12 @@ def run_comparison_local(
             orig_png = _read_bytes(job_dir, orig_key) if orig_key else None
             rev_png  = _read_bytes(job_dir, rev_key)  if rev_key  else None
 
-            view_images[i] = build_side_by_side(orig_png, rev_png, vd["label"])
+            view_images[i] = build_side_by_side(
+                orig_png, rev_png, vd["label"],
+                changes=vd.get("changes") or [],
+                orig_view=orig_views_by_idx.get(orig_idx) if orig_idx is not None else None,
+                rev_view=rev_views_by_idx.get(rev_idx)   if rev_idx  is not None else None,
+            )
 
         # Highlighted full-page renders
         orig_keys = orig_parsed.page_keys
