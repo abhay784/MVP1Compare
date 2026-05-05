@@ -29,6 +29,7 @@ from config import config
 from pipeline import comparator as _comparator_mod
 from pipeline.aggregator import aggregate
 from pipeline.annotator import build_side_by_side
+from pipeline.change_locator import annotate_change_locations
 from pipeline.comparator import compare_views, viewdiff_to_dict
 from pipeline.extractor import extract_dimensions, extract_revision_block, extract_title_block
 from pipeline.highlighter import highlight_page
@@ -200,6 +201,18 @@ def _build_side_views(
             and bbox_pt[1] <= d.bbox_y0 <= bbox_pt[3]
         ]
 
+        # Also keep ALL text tokens that fall inside this view's bbox, so the
+        # report-time annotator can locate change values that aren't dimension
+        # regex-matches (notes, callouts, multi-token labels, etc.).
+        page_text = parsed.pages[m.page_index].text_blocks
+        view_text_blocks = [
+            {"text": tb.text,
+             "bbox": [tb.bbox_x0, tb.bbox_y0, tb.bbox_x1, tb.bbox_y1]}
+            for tb in page_text
+            if bbox_pt[0] <= tb.bbox_x0 <= bbox_pt[2]
+            and bbox_pt[1] <= tb.bbox_y0 <= bbox_pt[3]
+        ]
+
         view_metadata.append({
             "index":         next_index,
             "page_index":    m.page_index,
@@ -210,6 +223,7 @@ def _build_side_views(
             "dimensions":    [{"value": d.value, "numeric": d.numeric,
                                "bbox": [d.bbox_x0, d.bbox_y0, d.bbox_x1, d.bbox_y1]}
                               for d in view_dims],
+            "text_blocks":   view_text_blocks,
         })
         match_to_view_index[mi] = next_index
         next_index += 1
@@ -378,6 +392,15 @@ def run_comparison_local(
             vd_dict["orig_index"] = m.get("orig_index")
             vd_dict["rev_index"]  = m.get("rev_index")
         view_diffs_dicts = aggregate(view_diffs_dicts)
+
+        # Resolve per-change locations + zone labels (LLM-provided bbox first,
+        # text-anchor fallback otherwise). Mutates each change dict in place.
+        annotate_change_locations(
+            view_diffs=view_diffs_dicts,
+            orig_views_by_idx={v["index"]: v for v in orig_views},
+            rev_views_by_idx={v["index"]: v for v in rev_views},
+            page_dims_pt={pi: dims for pi, dims in enumerate(orig_parsed.page_dims_pt)},
+        )
 
         changeset_dict = {"job_id": job_id, "view_diffs": view_diffs_dicts}
         _write_json(job_dir, f"metadata/{job_id}/changeset.json", changeset_dict)

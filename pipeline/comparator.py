@@ -48,6 +48,12 @@ class Change:
     severity: str           # "CRITICAL" | "MAJOR" | "MINOR" | "UNCERTAIN"
     confidence: float       # 0.0–1.0
     rationale: str = ""
+    # Optional per-side bounding boxes — normalized [0,1] within the
+    # respective view-crop image (NOT page-space). Populated by the LLM when
+    # it can see the change; used by the runner to derive page-space bboxes
+    # and zone labels. None if the change has no location on that side.
+    orig_bbox: list[float] | None = None
+    rev_bbox:  list[float] | None = None
 
 
 @dataclass
@@ -159,8 +165,27 @@ def _parse_llm_json(raw: str) -> list[Change]:
             severity=str(item.get("severity", "MINOR")).upper(),
             confidence=float(item.get("confidence", 0.0)),
             rationale=str(item.get("rationale", "")),
+            orig_bbox=_coerce_bbox(item.get("orig_bbox")),
+            rev_bbox=_coerce_bbox(item.get("rev_bbox")),
         ))
     return out
+
+
+def _coerce_bbox(raw) -> list[float] | None:
+    """Validate + clamp a normalized [0,1] bbox; return None if malformed."""
+    if raw is None:
+        return None
+    if not isinstance(raw, (list, tuple)) or len(raw) != 4:
+        return None
+    try:
+        x0, y0, x1, y1 = (float(v) for v in raw)
+    except (TypeError, ValueError):
+        return None
+    x0, x1 = sorted((max(0.0, min(1.0, x0)), max(0.0, min(1.0, x1))))
+    y0, y1 = sorted((max(0.0, min(1.0, y0)), max(0.0, min(1.0, y1))))
+    if x1 <= x0 or y1 <= y0:
+        return None
+    return [x0, y0, x1, y1]
 
 
 # ---------------------------------------------------------------------------

@@ -21,6 +21,7 @@ from api.jobs import complete_job, fail_job, update_job_stage
 from config import config
 from pipeline.aggregator import aggregate
 from pipeline.annotator import build_side_by_side
+from pipeline.change_locator import annotate_change_locations
 from pipeline.comparator import compare_views, viewdiff_to_dict
 from pipeline.highlighter import highlight_page
 from pipeline.extractor import extract_dimensions, extract_revision_block, extract_title_block
@@ -311,6 +312,18 @@ def run_comparison(job_id: str, part_number: str, notes: str) -> None:
             vd_dict["orig_index"] = m.get("orig_index")
             vd_dict["rev_index"] = m.get("rev_index")
         view_diffs_dicts = aggregate(view_diffs_dicts)
+
+        # Resolve per-change locations + zone labels (LLM-provided bbox first,
+        # text-anchor fallback otherwise). Mutates each change dict in place.
+        annotate_change_locations(
+            view_diffs=view_diffs_dicts,
+            orig_views_by_idx={v["index"]: v for v in orig_data["views"]},
+            rev_views_by_idx={v["index"]: v for v in rev_data["views"]},
+            page_dims_pt={
+                v["page_index"]: (orig_data["page_width_pt"], orig_data["page_height_pt"])
+                for v in orig_data["views"]
+            },
+        )
 
         changeset_key = f"metadata/{job_id}/changeset.json"
         _upload_json(changeset_key, {

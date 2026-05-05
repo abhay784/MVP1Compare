@@ -44,6 +44,8 @@
     .view-img-wrap { page-break-inside: avoid; page-break-after: auto; margin-bottom: 6pt; }
     .view-changes-table { page-break-before: auto; page-break-inside: auto; }
     .view-changes-table tr { page-break-inside: avoid; }
+    .zone-cell { font-family: "DejaVu Sans Mono", monospace; font-weight: bold;
+                 text-align: center; white-space: nowrap; }
 
     .page-img { width: 100%; max-width: 100%; margin: 4pt 0 12pt 0; border: 1px solid #ccc; }
     .page-caption { font-size: 9.5pt; color: #555; margin-bottom: 2pt; }
@@ -207,7 +209,7 @@
       <table class="view-changes-table">
         <thead>
           <tr>
-            <th>Severity</th><th>Field</th><th>Original</th><th>Revised</th>
+            <th>Severity</th><th>Field</th><th>Zone</th><th>Original</th><th>Revised</th>
             <th>Conf.</th><th>Rationale</th>
           </tr>
         </thead>
@@ -216,6 +218,7 @@
             <tr class="sev-{{ c.severity | sev_display }}">
               <td><strong>{{ c.severity | sev_display }}</strong></td>
               <td>{{ c.field }}</td>
+              <td class="zone-cell">{{ c.get('zone') or "—" }}</td>
               <td>{{ c.orig_value if c.orig_value is not none else "—" }}</td>
               <td>{{ c.revised_value if c.revised_value is not none else "—" }}</td>
               <td>{{ "%.2f"|format(c.confidence) }}</td>

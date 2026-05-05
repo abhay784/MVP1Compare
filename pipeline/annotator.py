@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import io
 import logging
+import re
 from typing import Any, Optional
 
 from PIL import Image, ImageDraw, ImageFont
@@ -63,10 +64,17 @@ _SEVERITY_RGB = {
     "UNCERTAIN": (107, 114, 128),
 }
 _SEVERITY_RANK = {"CRITICAL": 3, "MAJOR": 2, "MINOR": 1, "UNCERTAIN": 0}
-_DIM_MATCH_RATIO = 90      # rapidfuzz threshold for matching change values to dimensions
-_HIGHLIGHT_WIDTH = 6       # outline width for in-crop highlight ellipses
-_HIGHLIGHT_PAD_PX = 14
+_DIM_MATCH_RATIO     = 85  # rapidfuzz.ratio for dimension-string match
+_TOKEN_MATCH_RATIO   = 78  # rapidfuzz.partial_ratio for free-text token match
+_HIGHLIGHT_WIDTH = 7       # outline width for in-crop highlight ellipses
+_HIGHLIGHT_PAD_PX = 16
 _BADGE_PADDING_PX = 8
+
+# Tokens this short get matched only by exact substring, not fuzz, to avoid
+# spurious matches (e.g. value "5" hitting every "0.05" on the sheet).
+_MIN_FUZZ_TOKEN_LEN = 4
+
+_NUMERIC_RE = re.compile(r"\d+(?:\.\d+)?")
 
 
 # ---------------------------------------------------------------------------
@@ -120,21 +128,77 @@ def _max_severity(changes: list[dict]) -> Optional[str]:
     return sev
 
 
-def _find_dim_bbox(value: Optional[str], dimensions: list[dict]) -> Optional[list[float]]:
-    if not value or not dimensions:
-        return None
+def _find_anchor_bboxes(
+    value: Optional[str],
+    dimensions: list[dict],
+    text_blocks: list[dict],
+) -> list[list[float]]:
+    """Locate one OR MORE bboxes in page-space (PDF points) that anchor `value`
+    on the drawing.
+
+    Multi-token strategy — many drawing values like "Ø12.50 ±0.05" sit across
+    several PyMuPDF word tokens, so returning a single best match misses them.
+    We try, in order:
+
+      1. A near-exact match against the regex-extracted dimensions list.
+      2. Numeric-substring matches across text_blocks: every numeric token
+         from the change value is searched for as a literal substring of any
+         text-block's text.
+      3. A softer fuzz.partial_ratio sweep across remaining text_blocks for
+         non-numeric values (notes, callouts, labels).
+
+    Returns a list of bbox quadruples; empty if nothing plausible is found.
+    """
+    if not value:
+        return []
     val = str(value).strip()
     if not val:
-        return None
-    best_score, best_bbox = 0, None
-    for d in dimensions:
+        return []
+
+    # 1. Dimensions list (highest precision — these are pre-validated by regex).
+    dim_hits: list[list[float]] = []
+    for d in dimensions or []:
         dv = str(d.get("value", "")).strip()
         if not dv:
             continue
-        score = fuzz.ratio(val, dv)
-        if score > best_score:
-            best_score, best_bbox = score, d.get("bbox")
-    return best_bbox if best_score >= _DIM_MATCH_RATIO else None
+        if fuzz.ratio(val, dv) >= _DIM_MATCH_RATIO:
+            bbox = d.get("bbox")
+            if bbox:
+                dim_hits.append(bbox)
+    if dim_hits:
+        return dim_hits
+
+    # 2. Numeric tokens — search for digit-runs from the value as substrings.
+    numeric_tokens = [t for t in _NUMERIC_RE.findall(val) if len(t) >= 2]
+    numeric_hits: list[list[float]] = []
+    if numeric_tokens and text_blocks:
+        for tb in text_blocks:
+            tb_text = str(tb.get("text", ""))
+            if not tb_text:
+                continue
+            if any(nt in tb_text for nt in numeric_tokens):
+                bbox = tb.get("bbox")
+                if bbox:
+                    numeric_hits.append(bbox)
+    if numeric_hits:
+        return numeric_hits
+
+    # 3. Free-text fuzzy: for non-numeric values, try partial_ratio on every
+    #    text block and keep the strong matches.
+    if text_blocks and len(val) >= _MIN_FUZZ_TOKEN_LEN:
+        fuzzy_hits: list[list[float]] = []
+        for tb in text_blocks:
+            tb_text = str(tb.get("text", "")).strip()
+            if len(tb_text) < _MIN_FUZZ_TOKEN_LEN:
+                continue
+            if fuzz.partial_ratio(val, tb_text) >= _TOKEN_MATCH_RATIO:
+                bbox = tb.get("bbox")
+                if bbox:
+                    fuzzy_hits.append(bbox)
+        if fuzzy_hits:
+            return fuzzy_hits
+
+    return []
 
 
 def _draw_corner_badge(
@@ -186,42 +250,53 @@ def _highlight_crop(
     cw, ch = out.size
     matched_any = False
 
-    # Try to project each change's matching dimension bbox onto the crop.
+    # Two paths to anchor a change to crop pixels:
+    #   1. The runner's change_locator may have already resolved page-space
+    #      bboxes for us (LLM-provided OR text-anchor) and stashed them on
+    #      `c["orig_bbox_pt"] / c["rev_bbox_pt"]`. Use those directly.
+    #   2. Otherwise fall back to running the text-anchor search here, so
+    #      callers that bypass the runner (e.g. tests) still get something.
     if view_meta is not None:
         view_bbox = view_meta.get("bbox") or []
-        dimensions = view_meta.get("dimensions") or []
-        if len(view_bbox) == 4 and dimensions:
+        if len(view_bbox) == 4:
             vx0, vy0, vx1, vy1 = view_bbox
             view_w_pt = max(0.0, float(vx1) - float(vx0))
             view_h_pt = max(0.0, float(vy1) - float(vy0))
             if view_w_pt > 0 and view_h_pt > 0:
+                bbox_attr = "orig_bbox_pt" if side == "original" else "rev_bbox_pt"
+                dimensions = view_meta.get("dimensions") or []
+                text_blocks = view_meta.get("text_blocks") or []
+
                 for c in changes:
-                    value_for_side = c.get("orig_value") if side == "original" else c.get("revised_value")
-                    dim_bbox = _find_dim_bbox(value_for_side, dimensions)
-                    if dim_bbox is None:
-                        continue
-                    dx0, dy0, dx1, dy1 = dim_bbox
-
-                    # PDF-points page-space → crop-pixel space (proportional;
-                    # robust to off-by-one rounding between the rendered crop
-                    # and `view_w_pt * scale`).
-                    fx0 = (float(dx0) - float(vx0)) / view_w_pt
-                    fy0 = (float(dy0) - float(vy0)) / view_h_pt
-                    fx1 = (float(dx1) - float(vx0)) / view_w_pt
-                    fy1 = (float(dy1) - float(vy0)) / view_h_pt
-
-                    px0 = max(0, int(round(fx0 * cw))) - _HIGHLIGHT_PAD_PX
-                    py0 = max(0, int(round(fy0 * ch))) - _HIGHLIGHT_PAD_PX
-                    px1 = min(cw, int(round(fx1 * cw))) + _HIGHLIGHT_PAD_PX
-                    py1 = min(ch, int(round(fy1 * ch))) + _HIGHLIGHT_PAD_PX
-                    if px1 <= px0 or py1 <= py0:
+                    anchor_bboxes = c.get(bbox_attr) or []
+                    if not anchor_bboxes:
+                        value_for_side = (c.get("orig_value") if side == "original"
+                                          else c.get("revised_value"))
+                        anchor_bboxes = _find_anchor_bboxes(
+                            value_for_side, dimensions, text_blocks,
+                        )
+                    if not anchor_bboxes:
                         continue
 
                     c_sev = c.get("severity") or sev
                     c_colour = _SEVERITY_RGB.get(c_sev, colour)
-                    draw.ellipse([px0, py0, px1, py1],
-                                 outline=c_colour, width=_HIGHLIGHT_WIDTH)
-                    matched_any = True
+
+                    for ab in anchor_bboxes:
+                        dx0, dy0, dx1, dy1 = ab
+                        fx0 = (float(dx0) - float(vx0)) / view_w_pt
+                        fy0 = (float(dy0) - float(vy0)) / view_h_pt
+                        fx1 = (float(dx1) - float(vx0)) / view_w_pt
+                        fy1 = (float(dy1) - float(vy0)) / view_h_pt
+
+                        px0 = max(0, int(round(fx0 * cw)) - _HIGHLIGHT_PAD_PX)
+                        py0 = max(0, int(round(fy0 * ch)) - _HIGHLIGHT_PAD_PX)
+                        px1 = min(cw, int(round(fx1 * cw)) + _HIGHLIGHT_PAD_PX)
+                        py1 = min(ch, int(round(fy1 * ch)) + _HIGHLIGHT_PAD_PX)
+                        if px1 <= px0 or py1 <= py0:
+                            continue
+                        draw.ellipse([px0, py0, px1, py1],
+                                     outline=c_colour, width=_HIGHLIGHT_WIDTH)
+                        matched_any = True
 
     # Always show a corner badge so the reader sees the change count + severity
     # at-a-glance, even when no individual dimension was located.

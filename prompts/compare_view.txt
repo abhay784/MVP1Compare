@@ -18,10 +18,27 @@ before or after, no trailing commentary. The schema is:
       "revised_value": "string or null — the value on the REVISED side (null if the element was removed)",
       "severity": "CRITICAL | MAJOR | MINOR",
       "confidence": 0.0,
-      "rationale": "one sentence explaining what changed and why it matters"
+      "rationale": "one sentence explaining what changed and why it matters",
+      "orig_bbox": [x0, y0, x1, y1] | null,
+      "rev_bbox":  [x0, y0, x1, y1] | null
     }
   ]
 }
+
+LOCATION (orig_bbox / rev_bbox)
+  • Provide whenever you can see the change's location in the corresponding image.
+  • Each is a 4-number array [x0, y0, x1, y1] normalized to THAT image's own
+    pixel rectangle: all values in [0.0, 1.0], x0 < x1, y0 < y1, with x
+    increasing left-to-right and y increasing TOP-to-bottom (image convention).
+  • The bbox should tightly enclose the changed element AND its associated
+    text/leader: for a dimension change include the dimension line and the
+    dimension VALUE; for a note change include the note text; for a hole
+    that moved include the hole and its position dimension.
+  • Set orig_bbox to null when the element does NOT exist in the original
+    (newly added). Set rev_bbox to null when the element does NOT exist in
+    the revised (removed). Otherwise BOTH must be present.
+  • If the change touches multiple disconnected regions, pick the one most
+    diagnostic of the change (typically where the value/text sits).
 
 If the two views are functionally identical, return exactly:
 {"changes": []}
