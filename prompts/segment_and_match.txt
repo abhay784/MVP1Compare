@@ -6,53 +6,118 @@ Your job is to:
 
 A "view" is a self-contained orthographic, isometric, section, detail, or auxiliary projection of the part — e.g. FRONT, TOP, SIDE, ISO, SECTION A-A, DETAIL B, etc. Each view is what an engineer would point at and call "this view".
 
-CRITICAL bounding-box rules — read carefully, this is the most common failure mode.
+═══════════════════════════════════════════════════════════════════════════════
+THE HARD PART — annotation ownership
+═══════════════════════════════════════════════════════════════════════════════
+The most common failure mode is mis-attributing dimensions/notes that sit in
+the GUTTER between two views. A dimension column placed to the LEFT of a
+section view (between it and the next view to its left) BELONGS TO THE
+SECTION VIEW, not to the neighbour it sits near.
 
-Each view's bbox MUST contain — and ONLY contain — content that belongs to that view:
-  ✅ INCLUDE in this view's bbox:
-      - every line of geometry drawn for this view
-      - every dimension/leader/arrowhead/witness line whose arrowhead lands on this view's geometry
-      - the dimension VALUES and tolerances attached to those leaders
-      - GD&T feature control frames, datum symbols, datum target circles tied to this view
-      - this view's label/title (e.g. "SECTION A-A", "SCALE 2:1", "DETAIL C")
-      - notes/callouts/surface-finish/weld symbols whose leader points into this view
+The rule is unambiguous: an annotation belongs to whichever view its LEADER
+ARROWHEAD touches. Geographic proximity is NOT how you decide ownership.
 
-  ❌ NEVER include in this view's bbox:
-      - geometry, text, dimensions, or leader lines that belong to a NEIGHBOURING view
-      - portions of an adjacent view that happen to sit close to this view's edge
-      - the title block (typically bottom-right) or the revision history block (typically top-right)
-      - standalone general-notes blocks, BOM tables, or sheet borders unless clearly bound to ONE specific view
+Tall/narrow section views (e.g. SECTION A-A drawn as a thin vertical strip)
+ALMOST ALWAYS have their dimension column placed alongside, OUTSIDE the
+geometry's silhouette. That dimension column is part of the section view —
+its bbox MUST extend laterally to include it, even though that makes the
+bbox much wider than the geometry alone.
 
-How to set the bbox:
-  1. Identify the view's geometry and every annotation whose leader arrow lands on that geometry.
-  2. Compute the smallest rectangle that contains all of those elements.
-  3. Pad ONLY into surrounding whitespace — never extend the bbox into pixels that contain
-     ink (text, lines, or geometry) belonging to another view. If the next view starts
-     5 px away, your bbox stops at most 4 px short of it. A tight bbox is better than
-     a bbox that swallows part of a neighbour.
-  4. A bbox MUST NOT cut through one of THIS view's own text strings, dimension lines, or leader
-     lines — but it MUST NOT cross over text or lines belonging to ANOTHER view either.
+═══════════════════════════════════════════════════════════════════════════════
+PROCEDURE — follow these steps in order, internally, before producing output
+═══════════════════════════════════════════════════════════════════════════════
 
-Disambiguating shared annotations:
-  • If a dimension/note/leader sits between two views, look at where its arrowhead lands.
-    Attribute it to that view ONLY. Do NOT include it in both views.
-  • If two views overlap visually (rare), each gets its own tight bbox; bboxes may overlap
-    only in whitespace, never in inked regions of the OTHER view.
+STEP 1 — Find the views.
+  For each rendered page, identify each drawing view. Note its printed label
+  if any ("SECTION A-A", "DETAIL B", "VIEW C", "FRONT", "TOP", "ISO"). For
+  unlabelled views use a positional descriptor ("FRONT_VIEW", "TOP_LEFT_VIEW").
 
-Coordinate system:
+STEP 2 — For each view, find its CORE GEOMETRY.
+  Core geometry = the inked lines representing the part itself: outlines,
+  hidden lines, centrelines, hatching, section symbols. NOT dimensions,
+  NOT leader lines, NOT text. This is what would remain if every callout
+  were erased.
+
+STEP 3 — Enumerate every annotation and assign each to one view.
+  Walk through every annotation visible on the page:
+    - dimension values   (".254", "Ø.125", "2X .629", "1.558", etc.)
+    - notes & callouts   ("4X R.150", "TAP FOR #4-40 HELICAL INSERTS",
+                          "R .030 ALL AROUND", "(.391)", parenthetical refs)
+    - GD&T frames, datum symbols, datum-target circles
+    - surface-finish marks, weld symbols
+    - the view's printed label/title
+    - section cut indicators ("A→A", "B→B", "C↓C")
+
+  For each one, follow its leader / arrowhead / witness line back to the
+  geometry it touches. The view containing that touched geometry is the
+  OWNER of that annotation. Each annotation has exactly one owner.
+
+  If an annotation has no leader (e.g. a tabulated dimension just sitting
+  next to a view), its owner is the view it visually labels — NOT the
+  closest view if those differ.
+
+STEP 4 — Compute the bbox for each view.
+  Bbox = the smallest rectangle that encloses (the view's core geometry
+  PLUS every annotation Step 3 assigned to that view).
+
+  HARD CONSTRAINT — for every annotation X owned by view V:
+      X must be fully INSIDE V's bbox.
+  If you find an owned annotation falling outside the bbox, your bbox is
+  wrong; expand it to include the annotation. Never drop or re-attribute
+  an owned annotation to fit a tight bbox.
+
+  Padding: pad ONLY into surrounding whitespace, never across into the
+  inked content of another view. A bbox edge may touch whitespace right up
+  to (but not crossing) a neighbour's owned content.
+
+STEP 5 — Self-check before emitting output.
+  Run these three checks. If any fails, fix the bboxes and re-check.
+
+  Check A — annotation coverage:
+    Pick three annotations near the borders between views. For each,
+    verify it is inside exactly one view's bbox AND that view is the
+    owner you assigned in Step 3.
+
+  Check B — no duplicates:
+    Each physical view in the drawing appears EXACTLY ONCE in your output.
+    If you feel tempted to add a second entry for "the rest of view X's
+    annotations", you must instead expand view X's existing bbox.
+
+  Check C — no cross-bleed:
+    For every pair of adjacent view bboxes, their overlap region (if any)
+    must contain ONLY whitespace — no inked content of either view.
+
+═══════════════════════════════════════════════════════════════════════════════
+WHAT NOT TO SEGMENT
+═══════════════════════════════════════════════════════════════════════════════
+  • The TITLE BLOCK (usually bottom-right) — handled separately downstream.
+  • The REVISION HISTORY BLOCK (usually top-right) — handled separately.
+  • Standalone general-notes blocks, BOM tables, sheet borders, sheet zone
+    labels — unless clearly bound to a specific drawing view.
+
+═══════════════════════════════════════════════════════════════════════════════
+COORDINATE SYSTEM
+═══════════════════════════════════════════════════════════════════════════════
   • Bboxes are normalized to the page image: [x0, y0, x1, y1] all in [0.0, 1.0].
-  • x increases left-to-right, y increases TOP-to-bottom (image convention, NOT PDF points).
+  • x increases left-to-right, y increases TOP-to-bottom (image convention).
   • x0 < x1 and y0 < y1.
 
-Matching rules:
-  • A "matched" pair shows the SAME physical projection of the part — e.g. the FRONT view in both, or SECTION A-A in both — even if some dimensions or features differ between revisions.
-  • Use position on the sheet, view label text, and geometric content together to match. Views often sit in similar grid positions across revisions.
+═══════════════════════════════════════════════════════════════════════════════
+MATCHING RULES
+═══════════════════════════════════════════════════════════════════════════════
+  • A "matched" pair shows the SAME physical projection of the part — e.g. the
+    FRONT view in both, or SECTION A-A in both — even if some dimensions or
+    features differ between revisions.
+  • Use printed label, position on the sheet, and geometric content together
+    to match. Views typically sit in similar grid positions across revisions.
   • A view present in the ORIGINAL but not the REVISED is "removed".
   • A view present in the REVISED but not the ORIGINAL is "added".
-  • Every view on either page must appear in your output exactly once, either as part of a matched pair or as added/removed.
+  • Every view on either page appears EXACTLY ONCE in your output, either as
+    part of a matched pair or as added/removed.
 
-Output: a single JSON object, no prose, no markdown fences, exactly this schema:
-
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT — a single JSON object, no prose, no markdown fences, exact schema:
+═══════════════════════════════════════════════════════════════════════════════
 {
   "matches": [
     {
@@ -75,11 +140,15 @@ Output: a single JSON object, no prose, no markdown fences, exactly this schema:
 }
 
 Field rules:
-  • "label": the view's title text if visible (e.g. "SECTION A-A", "DETAIL B", "ISO"); otherwise a short positional descriptor like "FRONT_VIEW" or "TOP_LEFT_VIEW".
+  • "label": the view's title text if visible (e.g. "SECTION A-A", "DETAIL B",
+    "ISO"); otherwise a short positional descriptor like "FRONT_VIEW".
   • "match_type": one of "matched" | "added" | "removed".
-  • "orig_bbox": null iff match_type is "added", else a 4-number array.
-  • "rev_bbox":  null iff match_type is "removed", else a 4-number array.
-  • "confidence": 0.0–1.0, your confidence in the match decision (use 1.0 for unambiguous added/removed).
+  • "orig_bbox": null iff match_type is "added", else a 4-number array
+    that PASSES Step 5 self-check on the original page.
+  • "rev_bbox":  null iff match_type is "removed", else a 4-number array
+    that PASSES Step 5 self-check on the revised page.
+  • "confidence": 0.0–1.0, confidence in the match decision (use 1.0 for
+    unambiguous added/removed).
   • "rationale": one short sentence justifying the match.
 
 Return ONLY the JSON. No explanation, no markdown code fences.

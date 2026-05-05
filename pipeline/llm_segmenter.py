@@ -183,7 +183,101 @@ def _segment_and_match_page(
         and not (m.match_type == "removed" and m.orig_bbox_norm is None)
         and not (m.match_type == "matched" and (m.orig_bbox_norm is None or m.rev_bbox_norm is None))
     ]
+
+    # Defensive merge of duplicate matches. Sometimes the LLM emits two
+    # entries for the same physical view — typically one tight to the geometry
+    # and a second covering the annotations it didn't include in the first.
+    # When that happens, the user sees two overlapping highlight boxes (the
+    # "yellow + orange" failure mode). Collapse such pairs into the bbox
+    # UNION, so the surviving match covers everything either entry covered.
+    out = _merge_duplicate_matches(out)
     return out
+
+
+def _bbox_iou(a: tuple[float, float, float, float],
+              b: tuple[float, float, float, float]) -> float:
+    ax0, ay0, ax1, ay1 = a
+    bx0, by0, bx1, by1 = b
+    ix0 = max(ax0, bx0); iy0 = max(ay0, by0)
+    ix1 = min(ax1, bx1); iy1 = min(ay1, by1)
+    if ix1 <= ix0 or iy1 <= iy0:
+        return 0.0
+    inter = (ix1 - ix0) * (iy1 - iy0)
+    area_a = max(0.0, (ax1 - ax0) * (ay1 - ay0))
+    area_b = max(0.0, (bx1 - bx0) * (by1 - by0))
+    union = area_a + area_b - inter
+    return inter / union if union > 0 else 0.0
+
+
+def _bbox_union(a, b):
+    if a is None: return b
+    if b is None: return a
+    return (min(a[0], b[0]), min(a[1], b[1]),
+            max(a[2], b[2]), max(a[3], b[3]))
+
+
+_DUPLICATE_IOU_THRESHOLD = 0.30   # at least this overlap on the relevant side(s)
+
+
+def _merge_duplicate_matches(matches: list[LLMMatch]) -> list[LLMMatch]:
+    """Collapse pairs of matches that target the same physical view.
+
+    Heuristic: two matches are duplicates if, on every side where BOTH have a
+    bbox, those bboxes overlap with IoU >= threshold. The merged match takes
+    the bbox union on each side and keeps the longer rationale. Type wins by
+    priority matched > added > removed (matched is the most informative).
+    """
+    survivors: list[LLMMatch] = []
+    consumed = [False] * len(matches)
+
+    type_priority = {"matched": 0, "added": 1, "removed": 2}
+
+    for i, mi in enumerate(matches):
+        if consumed[i]:
+            continue
+        merged = mi
+        for j in range(i + 1, len(matches)):
+            if consumed[j]:
+                continue
+            mj = matches[j]
+            if mi.page_index != mj.page_index:
+                continue
+
+            # Compute IoU on whichever sides BOTH have a bbox.
+            ious: list[float] = []
+            if merged.orig_bbox_norm and mj.orig_bbox_norm:
+                ious.append(_bbox_iou(merged.orig_bbox_norm, mj.orig_bbox_norm))
+            if merged.rev_bbox_norm and mj.rev_bbox_norm:
+                ious.append(_bbox_iou(merged.rev_bbox_norm, mj.rev_bbox_norm))
+            if not ious:
+                continue
+            if min(ious) < _DUPLICATE_IOU_THRESHOLD:
+                continue
+
+            log.info("Merging duplicate seg matches %r + %r (min IoU %.2f)",
+                     merged.label, mj.label, min(ious))
+
+            # Pick the more informative match_type (matched > added > removed)
+            if type_priority[mj.match_type] < type_priority[merged.match_type]:
+                kept_type, kept_label = mj.match_type, mj.label
+            else:
+                kept_type, kept_label = merged.match_type, merged.label
+
+            merged = LLMMatch(
+                label=kept_label,
+                match_type=kept_type,
+                orig_bbox_norm=_bbox_union(merged.orig_bbox_norm, mj.orig_bbox_norm),
+                rev_bbox_norm=_bbox_union(merged.rev_bbox_norm,  mj.rev_bbox_norm),
+                confidence=max(merged.confidence, mj.confidence),
+                rationale=(merged.rationale if len(merged.rationale) >= len(mj.rationale)
+                           else mj.rationale),
+                page_index=merged.page_index,
+            )
+            consumed[j] = True
+        survivors.append(merged)
+        consumed[i] = True
+
+    return survivors
 
 
 # ---------------------------------------------------------------------------
