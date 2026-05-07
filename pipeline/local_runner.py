@@ -29,6 +29,7 @@ from config import config
 from pipeline import comparator as _comparator_mod
 from pipeline.aggregator import aggregate
 from pipeline.annotator import build_side_by_side
+from pipeline.bbox_snap import snap_view_bboxes_to_text
 from pipeline.change_locator import annotate_change_locations
 from pipeline.comparator import compare_views, viewdiff_to_dict
 from pipeline.extractor import extract_dimensions, extract_revision_block, extract_title_block
@@ -155,6 +156,73 @@ def _crop_norm(image: np.ndarray, bbox_norm: tuple[float, float, float, float]) 
     if px1 <= px0 or py1 <= py0:
         return np.zeros((1, 1, 3), dtype=image.dtype)
     return image[py0:py1, px0:px1]
+
+
+def _snap_match_bboxes_to_text(
+    matches: list[LLMMatch],
+    orig_parsed: _ParsedDoc,
+    rev_parsed: _ParsedDoc,
+) -> None:
+    """Snap each LLM-emitted view bbox so no view edge cuts annotation text.
+
+    Mutates `matches` in place. Runs per side, per page: gathers the page's
+    text-token bboxes (PyMuPDF word granularity, in PDF points), converts
+    each match's normalized bbox to PDF points, runs the constraint-based
+    snap from `pipeline.bbox_snap`, then writes the result back as a
+    normalized [0,1] tuple.
+    """
+    for side, parsed in (("original", orig_parsed), ("revised", rev_parsed)):
+        bbox_attr = "orig_bbox_norm" if side == "original" else "rev_bbox_norm"
+        n_pages = len(parsed.pages)
+
+        for pi in range(n_pages):
+            page_w_pt, page_h_pt = parsed.page_dims_pt[pi]
+            if page_w_pt <= 0 or page_h_pt <= 0:
+                continue
+
+            text_bboxes_pt: list[tuple[float, float, float, float]] = [
+                (tb.bbox_x0, tb.bbox_y0, tb.bbox_x1, tb.bbox_y1)
+                for tb in parsed.pages[pi].text_blocks
+            ]
+
+            page_match_indices: list[int] = []
+            page_match_bboxes_pt: list[tuple[float, float, float, float]] = []
+            for mi, m in enumerate(matches):
+                if m.page_index != pi:
+                    continue
+                bbox_norm = getattr(m, bbox_attr)
+                if bbox_norm is None:
+                    continue
+                x0n, y0n, x1n, y1n = bbox_norm
+                page_match_indices.append(mi)
+                page_match_bboxes_pt.append((
+                    x0n * page_w_pt, y0n * page_h_pt,
+                    x1n * page_w_pt, y1n * page_h_pt,
+                ))
+
+            if not page_match_bboxes_pt:
+                continue
+
+            new_bboxes_pt = snap_view_bboxes_to_text(
+                page_match_bboxes_pt, text_bboxes_pt,
+            )
+
+            for mi_idx, new_pt in zip(page_match_indices, new_bboxes_pt):
+                m = matches[mi_idx]
+                new_norm = (
+                    max(0.0, min(1.0, new_pt[0] / page_w_pt)),
+                    max(0.0, min(1.0, new_pt[1] / page_h_pt)),
+                    max(0.0, min(1.0, new_pt[2] / page_w_pt)),
+                    max(0.0, min(1.0, new_pt[3] / page_h_pt)),
+                )
+                if new_norm[2] <= new_norm[0] or new_norm[3] <= new_norm[1]:
+                    continue   # degenerate; keep the LLM's original
+                if side == "original":
+                    m.orig_bbox_norm = new_norm
+                else:
+                    m.rev_bbox_norm = new_norm
+
+    log.info("Snapped match bboxes to text-token boundaries")
 
 
 def _build_side_views(
@@ -352,6 +420,9 @@ def run_comparison_local(
             rev_pages=[p.image for p in rev_parsed.pages],
         )
         log.info("[%s] LLM produced %d view match(es)", job_id, len(matches))
+
+        _stage(job_id, "snapping bboxes to text", 65)
+        _snap_match_bboxes_to_text(matches, orig_parsed, rev_parsed)
 
         _stage(job_id, "writing crops + extraction", 70)
         orig_views, orig_m2v = _build_side_views(job_id, job_dir, "original", matches, orig_parsed)
