@@ -1,0 +1,19 @@
+{
+  "page_index": 1,
+  "parents": [
+    {
+      "label": "SIDE",
+      "cut_ids": []
+    },
+    {
+      "label": "SIDE SIDE",
+      "cut_ids": []
+    },
+    {
+      "label": "VIEW_8",
+      "cut_ids": []
+    }
+  ],
+  "derived": [],
+  "part_summary": "A symmetric mounting bracket or housing with two rectangular recessed pockets, four tapped through-holes for #4-40 helical inserts, and mounting bosses on each end, shown with three cross-sections detailing internal wall profiles and hole geometry."
+}

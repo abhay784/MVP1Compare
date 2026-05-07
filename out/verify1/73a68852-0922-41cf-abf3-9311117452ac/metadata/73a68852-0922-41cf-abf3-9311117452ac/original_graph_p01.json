@@ -1,0 +1,19 @@
+{
+  "page_index": 1,
+  "parents": [
+    {
+      "label": "SIDE",
+      "cut_ids": []
+    },
+    {
+      "label": "SIDE SIDE",
+      "cut_ids": []
+    },
+    {
+      "label": "VIEW_8",
+      "cut_ids": []
+    }
+  ],
+  "derived": [],
+  "part_summary": "A rectangular mounting bracket or housing with four corner boss holes, a central recessed pocket on each face, and tapped helicoil inserts, shown across multiple section views."
+}

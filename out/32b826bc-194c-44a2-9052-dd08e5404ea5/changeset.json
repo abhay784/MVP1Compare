@@ -1,0 +1,307 @@
+{
+  "job_id": "32b826bc-194c-44a2-9052-dd08e5404ea5",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None",
+          "impact": "Revision field in the title block is now blank \u2014 drawing control system may reject or misfile this document; reviewer should confirm the correct revision letter is populated before release.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION C-C",
+      "match_type": "matched",
+      "changes": [],
+      "orig_index": 4,
+      "rev_index": 4,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "C-C"
+    },
+    {
+      "label": "ANNOTATION",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Flat/straight bottom edge profile on front isometric view",
+          "revised_value": "Rounded/filleted bottom edge profile on front isometric view",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The lower corners/edges of the bracket in the front isometric view appear to have added fillet radii, changing the part geometry from sharp/straight to rounded profiles.",
+          "impact": "Bottom edge fillets added to the bracket body will require updated CNC toolpaths or casting/forging die modifications and must be verified against mating-part clearance envelopes.",
+          "confirmed_by": []
+        },
+        {
+          "field": "annotation",
+          "orig_value": "REV NC, INITIAL RELEASE & SEE EO., 06/28/25",
+          "revised_value": "REV A, SEE EO, 10/16/25",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "Revision table updated from NC (initial release) to Rev A with new date and simplified description.",
+          "impact": "Documentation-only update advancing the revision table to Rev A; no dimensional or functional impact.",
+          "confirmed_by": []
+        },
+        {
+          "field": "note",
+          "orig_value": "P/N: XXXXX-1 REV: NC",
+          "revised_value": "P/N: XXXXX-1 REV: A",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "Note 3 identification marking updated from REV NC to REV A to match the new revision level.",
+          "impact": "Part marking specification updated to Rev A; manufactured parts must be stamped or engraved with the new revision level to maintain traceability.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_FRONT",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Left mounting boss/tab has a straight/angular transition from the rolled cylindrical lug to the flat face",
+          "revised_value": "Left mounting boss/tab has a larger, more pronounced curved (S-shaped) transition from the rolled cylindrical lug to the flat face",
+          "severity": "MAJOR",
+          "confidence": 0.78,
+          "rationale": "The left lug/boss area shows a changed fillet or curved transition geometry between the rolled cylindrical feature and the main body, which affects the structural form and potentially the stress distribution of the bracket.",
+          "impact": "The enlarged S-curve blend on the left lug-to-body transition changes the local cross-section and stress flow path, potentially improving fatigue life but requiring re-verification of fit with any mating clamp or housing feature.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_REAR",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp interior corners at left-side vertical edges of upper and lower slot/pocket openings (left face)",
+          "revised_value": "Filleted/radiused interior corners at left-side vertical edges of upper and lower slot/pocket openings (left face)",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "The revised view shows rounded/filleted corners on the left-face interior pocket edges where the original had sharp corners, indicating a geometry change that affects stress concentration and potentially manufacturing process.",
+          "impact": "Filleting the previously sharp slot pocket corners reduces stress concentration and is consistent with the broader radius additions in this revision; machining must now include a radius pass on these interior edges.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_1",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": "16X R.030",
+          "revised_value": "8X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "[deduped across views] The quantity multiplier for the R.030 radius in the main front view changed from 16X to 8X, indicating fewer corner radii are called out with this value, which affects manufacturing interpretation of how many features carry this radius.",
+          "impact": "Halving the R.030 callout count means eight corners previously specified at R.030 are now governed by a different (likely larger) radius callout; manufacturing must identify which features migrated to the new R.093 or other radius to avoid under- or over-cutting.",
+          "confirmed_by": []
+        },
+        {
+          "field": "note",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "TAP FOR #4-40 HELICAL INSERTS",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "[deduped across views] The thread insert callout wording changed from 'HELICOIL' (brand name) to 'HELICAL INSERTS' (generic term), which is a documentation/terminology change but does not alter the functional specification.",
+          "impact": "Terminology-only change from brand name to generic; functional thread insert specification is unchanged, but procurement and process sheets should be updated for consistency.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 3,
+      "rev_index": 3,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "note",
+          "orig_value": ".165 X 90\u00b0; NEAR SIDE / P FOR #4-40 HELICOIL",
+          "revised_value": null,
+          "severity": "CRITICAL",
+          "confidence": 0.72,
+          "rationale": "The helicoil tap drill and countersink note visible in the original ('.165 X 90\u00b0, NEAR SIDE / P FOR #4-40 HELICOIL') appears to have been removed or cropped out of the revised view, which could affect thread insert manufacturing requirements.",
+          "impact": "CRITICAL: The countersink diameter and angle callout for the #4-40 helical insert holes has been removed; without this note, machinists lack the countersink specification needed to properly prepare the holes, risking non-conforming thread insert installation.",
+          "confirmed_by": []
+        },
+        {
+          "field": "dimension",
+          "orig_value": "30",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 0.65,
+          "rationale": "The dimension '30' with a leader visible in the original view is no longer present in the revised view, suggesting a dimension was removed or relocated.",
+          "impact": "A dimension previously visible in Section A-A has been removed or relocated; reviewer must confirm the associated feature is fully dimensioned elsewhere on the drawing to prevent an under-constrained condition.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 6,
+      "rev_index": 6,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "4X R.093",
+          "severity": "MAJOR",
+          "confidence": 0.9,
+          "rationale": "[deduped across views] A new radius callout '4X R.093' has been added in the revised view, specifying the corner radii on the mounting bosses or outer corners, which was not explicitly called out in the original.",
+          "impact": "New explicit R.093 radius callout added for four boss or outer corner features; tooling must be selected or verified to produce this radius, and inspection plans updated accordingly.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 7,
+      "rev_index": 7,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp or unspecified transition between mounting boss and top face",
+          "revised_value": "Smooth curved blend/fillet visible between boss and top face",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "In the revised view the mounting bosses show a smooth curved tangent blend into the top surface, whereas the original shows a more abrupt step transition, indicating a geometry change to the boss profile.",
+          "impact": "Smooth fillet blend between boss and top face improves fatigue resistance at a high-stress junction; machining or casting process must be updated to produce the tangent blend, and the specific radius value should be confirmed against the new R.093 callout.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 8,
+      "rev_index": 8,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp/straight corner transition between top mounting boss and main body (upper left and upper right)",
+          "revised_value": "Rounded/filleted corner transition between top mounting boss and main body (upper left and upper right)",
+          "severity": "MAJOR",
+          "confidence": 0.82,
+          "rationale": "The top edge transitions from the mounting boss pedestals to the main body now show curved fillets instead of sharp right-angle steps, indicating a geometry change to the boss-to-body blend radius that affects stress concentration and potentially fit.",
+          "impact": "Filleted boss-to-body corners (upper left and right) reduce stress risers at load-bearing transitions; confirmed geometry change visible in Section A-A requires updated machining operations and CMM inspection points.",
+          "confirmed_by": []
+        },
+        {
+          "field": "annotation",
+          "orig_value": "Leader arrow pointing to upper-left boss area only (single arrow at top-left)",
+          "revised_value": "Leader arrow present at upper-left boss area and an additional small arrow/indicator appears near the upper-left pocket corner",
+          "severity": "MINOR",
+          "confidence": 0.65,
+          "rationale": "A small annotation arrow or indicator appears near the left pocket corner in the revised view that was not present in the original, possibly calling out the new fillet radius.",
+          "impact": "Additional leader arrow likely calls out the new pocket-corner fillet; reviewer should confirm it is tied to a specific radius value to avoid ambiguity on the shop floor.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 10,
+      "rev_index": 10,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "impact": "A new Section B-B view has been added to the drawing, providing additional cross-sectional detail not previously documented; manufacturing and inspection personnel must incorporate this view into their review and process planning.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 11,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "impact": "A new Section B-B view has been added to the drawing, providing additional cross-sectional detail not previously documented; manufacturing and inspection personnel must incorporate this view into their review and process planning.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 12,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    }
+  ],
+  "executive_summary": "This Rev A release of bracket P-001 (upgraded from initial release NC) introduces several significant geometry changes that affect manufacturing and structural performance. Most critically, the countersink and tap drill note ('.165 X 90\u00b0, NEAR SIDE / TAP FOR #4-40 HELICOIL') has been removed from Section A-A, creating a potential gap in thread insert manufacturing requirements that demands immediate reviewer attention. Across multiple views, previously sharp interior pocket corners and boss-to-body transitions have been replaced with defined fillet radii \u2014 including a new 4X R.093 callout on mounting bosses and filleted slot pocket corners \u2014 reducing stress concentrations but requiring updated toolpaths and inspection criteria. The R.030 radius count was reduced from 16X to 8X, suggesting some corners now carry the new larger radii instead, and a new Section B-B view has been added to the drawing package. Documentation updates include the revision table advance to Rev A (10/16/25), part marking updated to REV A, and the thread insert terminology changed from the brand name 'HELICOIL' to the generic 'HELICAL INSERTS.'"
+}

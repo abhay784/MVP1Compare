@@ -1,0 +1,57 @@
+{
+  "source": "solidworks",
+  "old_file": "C:\\drawings\\RevA.SLDPRT",
+  "new_file": "C:\\drawings\\RevB.SLDPRT",
+  "file_kind": "part",
+  "exported_pdfs": null,
+  "warnings": [],
+  "changes": [
+    {
+      "type": "dimension",
+      "feature_name": "Boss-Extrude1",
+      "parameter": "D1@Sketch1",
+      "old_value": 20.0,
+      "new_value": 25.0,
+      "units": "mm",
+      "affected_geometry": ["Face<1>", "Edge<5>"],
+      "drawing_views": []
+    },
+    {
+      "type": "dimension",
+      "feature_name": "Cut-Extrude2",
+      "parameter": "D2@Sketch3",
+      "old_value": 10.0,
+      "new_value": 10.05,
+      "units": "mm"
+    },
+    {
+      "type": "material",
+      "feature_name": "",
+      "parameter": "material",
+      "old_value": "AISI 1020 Steel",
+      "new_value": "Aluminum 6061-T6"
+    },
+    {
+      "type": "feature_added",
+      "feature_name": "Hole-Tap1",
+      "parameter": null,
+      "old_value": null,
+      "new_value": "M6x1.0 tapped hole"
+    },
+    {
+      "type": "suppression",
+      "feature_name": "Fillet1",
+      "parameter": "IsSuppressed",
+      "old_value": false,
+      "new_value": true
+    },
+    {
+      "type": "tolerance",
+      "feature_name": "Boss-Extrude1",
+      "parameter": "D1@Sketch1",
+      "nominal": 25.0,
+      "tolerance_old": [-0.1, 0.1],
+      "tolerance_new": [-0.05, 0.05]
+    }
+  ]
+}

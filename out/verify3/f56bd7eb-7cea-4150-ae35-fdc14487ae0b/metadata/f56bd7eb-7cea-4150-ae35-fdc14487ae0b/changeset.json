@@ -1,0 +1,463 @@
+{
+  "job_id": "f56bd7eb-7cea-4150-ae35-fdc14487ae0b",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None",
+          "impact": "Revision field in title block was cleared from 'TS' \u2014 confirm this is intentional and not a data-entry omission before release."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION C-C",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": "16X R.030",
+          "revised_value": "8X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "The count of R.030 radii on the rectangular pockets changed from 16X to 8X, indicating either a reduction in the number of radiused corners or a re-classification of which radii are called out under this leader, affecting machining requirements.",
+          "impact": "Halving the called-out R.030 radius count from 16 to 8 may reduce machining operations or indicate re-annotation; machinist must verify all pocket corners are accounted for to avoid under-machining."
+        },
+        {
+          "field": "note",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "TAP FOR #4-40 HELICAL INSERTS",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "The insert type callout was changed from 'HELICOIL' (brand name) to 'HELICAL INSERTS' (generic term), which is a documentation/terminology change that does not affect the functional specification.",
+          "impact": "Purely a documentation/terminology change from brand name to generic \u2014 no functional or manufacturing impact expected."
+        }
+      ],
+      "orig_index": 4,
+      "rev_index": 4,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "C-C"
+    },
+    {
+      "label": "ANNOTATION",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Flat/straight bottom edge profile on front isometric view",
+          "revised_value": "Rounded/filleted bottom edge profile on front isometric view",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The lower corners/edges of the bracket in the front isometric view appear to have added fillet radii, changing the part geometry from sharp/straight to rounded profiles.",
+          "impact": "Added fillets on the bracket's lower edges change the machining envelope and may affect fixturing, deburring steps, and mating-part clearance."
+        },
+        {
+          "field": "annotation",
+          "orig_value": "REV NC, INITIAL RELEASE & SEE EO., 06/28/25",
+          "revised_value": "REV A, SEE EO, 10/16/25",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "Revision table updated from NC (initial release) to Rev A with new date and simplified description.",
+          "impact": "Administrative revision history update only \u2014 no manufacturing or functional impact."
+        },
+        {
+          "field": "note",
+          "orig_value": "P/N: XXXXX-1 REV: NC",
+          "revised_value": "P/N: XXXXX-1 REV: A",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "Note 3 identification marking updated from REV NC to REV A to match the new revision level.",
+          "impact": "Identification marking note updated to match new revision level \u2014 documentation only, but part marking/labeling must be updated accordingly."
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_FRONT",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Left mounting boss/tab has a straight/angular transition from the cylindrical roll to the flat face",
+          "revised_value": "Left mounting boss/tab has a larger, more pronounced curved (S-shaped) transition from the cylindrical roll to the flat face",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The left upper mounting lug shows a changed fillet/blend geometry where the rolled cylindrical feature transitions to the main body, indicating a modified radius or swept profile that affects the part shape and potentially its strength.",
+          "impact": "Modified blend geometry on the left mounting lug changes the swept profile, requiring updated CAM toolpaths and potentially affecting structural load transfer at that feature."
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_REAR",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp interior corners at left-side vertical edges of the two rectangular slot openings (upper and lower slots on left face)",
+          "revised_value": "Filleted/radiused interior corners at left-side vertical edges of the two rectangular slot openings (upper and lower slots on left face)",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "The revised view shows curved/filleted transitions at the interior corners of the left-side slot openings where the original had sharp corners, indicating a geometry change that affects stress concentration and potentially manufacturing method.",
+          "impact": "Adding fillets to previously sharp slot interior corners reduces stress concentration and changes end-mill requirements; confirm fillet radius is explicitly dimensioned elsewhere on the drawing."
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_1",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "VIEW_1",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'VIEW_1' was present in the original but not the revised drawing.",
+          "impact": "VIEW_1 removed from drawing set \u2014 verify that all dimensions and features formerly shown in this view are fully captured in the new view structure."
+        }
+      ],
+      "orig_index": 3,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "SIDE view removed \u2014 confirm all side-face dimensions and tolerances are re-expressed in the replacement section views to avoid underdefined geometry."
+        }
+      ],
+      "orig_index": 5,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "SIDE view removed \u2014 confirm all side-face dimensions and tolerances are re-expressed in the replacement section views to avoid underdefined geometry."
+        }
+      ],
+      "orig_index": 6,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "SIDE view removed \u2014 confirm all side-face dimensions and tolerances are re-expressed in the replacement section views to avoid underdefined geometry."
+        }
+      ],
+      "orig_index": 7,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "SIDE view removed \u2014 confirm all side-face dimensions and tolerances are re-expressed in the replacement section views to avoid underdefined geometry."
+        }
+      ],
+      "orig_index": 8,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "SIDE view removed \u2014 confirm all side-face dimensions and tolerances are re-expressed in the replacement section views to avoid underdefined geometry."
+        }
+      ],
+      "orig_index": 9,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_8",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "VIEW_8",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'VIEW_8' was present in the original but not the revised drawing.",
+          "impact": "VIEW_8 removed \u2014 reviewer should confirm no unique dimensions or notes from this view were lost in the drawing restructure."
+        }
+      ],
+      "orig_index": 10,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ANNOTATION",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "ANNOTATION",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'ANNOTATION' appears only in the revised drawing.",
+          "impact": "New ANNOTATION view added to consolidate notes and revision data \u2014 documentation restructuring, no direct manufacturing impact but review for completeness."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 3,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "FRONT",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "FRONT",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'FRONT' appears only in the revised drawing.",
+          "impact": "New orthographic FRONT view added, providing explicit 2D geometry reference that replaces isometric-only coverage \u2014 improves manufacturing clarity."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 5,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, exposing internal features not previously sectioned \u2014 machinist and inspector should use this view for hole/pocket depth verification."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 6,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, exposing internal features not previously sectioned \u2014 machinist and inspector should use this view for hole/pocket depth verification."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 7,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, exposing internal features not previously sectioned \u2014 machinist and inspector should use this view for hole/pocket depth verification."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 8,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, exposing internal features not previously sectioned \u2014 machinist and inspector should use this view for hole/pocket depth verification."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 9,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, exposing internal features not previously sectioned \u2014 machinist and inspector should use this view for hole/pocket depth verification."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 10,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "impact": "New Section B-B added, providing additional cross-sectional detail; confirm all dimensions in this section are consistent with mating part interfaces."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 11,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "impact": "New Section B-B added, providing additional cross-sectional detail; confirm all dimensions in this section are consistent with mating part interfaces."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 12,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    }
+  ],
+  "executive_summary": "Rev A of DA1840189 (issued 10/16/25) introduces several significant geometry changes to this bracket/clamp block alongside a substantial drawing reorganization. Most critically, multiple fillet/radius additions are evident: slot opening interior corners on the rear face transition from sharp to radiused, the lower edge profile of the bracket gains fillets, and the left mounting boss blend geometry changes to a more pronounced S-curve transition \u2014 all of which affect stress concentration, machining toolpaths, and potentially fixture requirements. The R.030 pocket corner callout count is halved from 16X to 8X in Section C-C, requiring clarification as to whether corners were removed from the design or merely re-grouped under a different leader. The drawing set itself was substantially restructured: views VIEW_1, SIDE, and VIEW_8 were removed and replaced with a new FRONT view, Sections A-A, B-B, and C-C, and an ANNOTATION view, reflecting a more fully detailed second sheet; the revision block title field also lost its 'TS' designation, which should be confirmed as intentional. Minor documentation updates include replacing the brand-specific 'HELICOIL' callout with the generic 'HELICAL INSERTS' and updating all revision identifiers from NC to A."
+}

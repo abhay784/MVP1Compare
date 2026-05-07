@@ -190,3 +190,4 @@ See `config.py` for tunable parameters:
 2. Monitor the worker terminal to see the pipeline stages.
 3. Once complete, download the highlighted PNGs and PDF report from the presigned URLs.
 4. Verify that view boxes are drawn in the correct severity colours and dimension circles appear where expected.
+python3 cli.py compare "DA1840189_NC (1).pdf" "DA1840189_A (1).pdf" --part-number P-001 --out-dir ./out

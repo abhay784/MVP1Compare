@@ -1,0 +1,77 @@
+{
+  "job_id": "0d0fa489-3b7a-4e8c-8ceb-01810602e58c",
+  "matches": [
+    {
+      "orig_index": null,
+      "rev_index": null,
+      "label": "title_block",
+      "score": 1.0,
+      "match_type": "title_block",
+      "orig_crop_s3_key": null,
+      "rev_crop_s3_key": null
+    },
+    {
+      "orig_index": null,
+      "rev_index": null,
+      "label": "revision_block",
+      "score": 1.0,
+      "match_type": "revision_block",
+      "orig_crop_s3_key": null,
+      "rev_crop_s3_key": null
+    },
+    {
+      "orig_index": 0,
+      "rev_index": 0,
+      "label": "ISO_VIEW_LEFT",
+      "score": 0.93,
+      "match_type": "matched",
+      "orig_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/original/view_00.png",
+      "rev_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/revised/view_00.png"
+    },
+    {
+      "orig_index": 1,
+      "rev_index": 1,
+      "label": "ISO_VIEW_RIGHT",
+      "score": 0.93,
+      "match_type": "matched",
+      "orig_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/original/view_01.png",
+      "rev_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/revised/view_01.png"
+    },
+    {
+      "orig_index": 2,
+      "rev_index": 2,
+      "label": "SECTION B-B",
+      "score": 0.97,
+      "match_type": "matched",
+      "orig_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/original/view_02.png",
+      "rev_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/revised/view_02.png"
+    },
+    {
+      "orig_index": 3,
+      "rev_index": 3,
+      "label": "FRONT_VIEW",
+      "score": 0.95,
+      "match_type": "matched",
+      "orig_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/original/view_03.png",
+      "rev_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/revised/view_03.png"
+    },
+    {
+      "orig_index": 4,
+      "rev_index": 4,
+      "label": "SECTION A-A",
+      "score": 0.97,
+      "match_type": "matched",
+      "orig_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/original/view_04.png",
+      "rev_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/revised/view_04.png"
+    },
+    {
+      "orig_index": 5,
+      "rev_index": 5,
+      "label": "SECTION C-C",
+      "score": 0.97,
+      "match_type": "matched",
+      "orig_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/original/view_05.png",
+      "rev_crop_s3_key": "crops/0d0fa489-3b7a-4e8c-8ceb-01810602e58c/revised/view_05.png"
+    }
+  ]
+}

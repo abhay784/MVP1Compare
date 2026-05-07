@@ -1,0 +1,28 @@
+{
+  "page_index": 1,
+  "parents": [
+    {
+      "label": "VIEW_1",
+      "cut_ids": [
+        "C-C"
+      ]
+    },
+    {
+      "label": "SIDE",
+      "cut_ids": []
+    },
+    {
+      "label": "VIEW_8",
+      "cut_ids": []
+    }
+  ],
+  "derived": [
+    {
+      "label": "SECTION C-C",
+      "parent_label": "VIEW_1",
+      "cut_id": "C-C",
+      "describes": null
+    }
+  ],
+  "part_summary": null
+}

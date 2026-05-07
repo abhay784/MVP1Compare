@@ -1,0 +1,19 @@
+{
+  "page_index": 0,
+  "parents": [
+    {
+      "label": "ANNOTATION",
+      "cut_ids": []
+    },
+    {
+      "label": "ISO_FRONT",
+      "cut_ids": []
+    },
+    {
+      "label": "ISO_REAR",
+      "cut_ids": []
+    }
+  ],
+  "derived": [],
+  "part_summary": "A rectangular machined bracket or clamp body with mounting holes, elongated slots, and interlocking features, shown in two isometric views (exploded/assembled pair) on sheet 1 of 3."
+}

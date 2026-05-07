@@ -44,15 +44,40 @@ def _validate_pdf(path: Path, label: str) -> int:
     return path.stat().st_size
 
 
+_SW_SUFFIXES = {".sldprt", ".sldasm", ".slddrw"}
+
+
+def _validate_solidworks(path: Path, label: str) -> None:
+    # Existence / size are enforced by the Windows-side service; we only
+    # check the suffix so the user gets fast feedback on obvious typos.
+    if path.suffix.lower() not in _SW_SUFFIXES:
+        _err(f"{label} file does not have a SOLIDWORKS extension "
+             f"(.SLDPRT/.SLDASM/.SLDDRW): {path}")
+        sys.exit(2)
+
+
 def _cmd_compare(args: argparse.Namespace) -> int:
-    if not config.anthropic_api_key:
-        _err("ANTHROPIC_API_KEY is not set. Add it to .env (see .env.example) and retry.")
-        return 2
+    source = getattr(args, "source", "pdf")
+
+    if source == "pdf":
+        if not config.anthropic_api_key:
+            _err("ANTHROPIC_API_KEY is not set. Add it to .env (see .env.example) and retry.")
+            return 2
+    elif source == "solidworks":
+        if not config.solidworks_service_url:
+            _err("SOLIDWORKS_SERVICE_URL is not set. Add it to .env to point at the "
+                 "Windows-side SWCompare service.")
+            return 2
 
     original_path = Path(args.original).expanduser().resolve()
     revised_path  = Path(args.revised).expanduser().resolve()
-    _validate_pdf(original_path, "original")
-    _validate_pdf(revised_path,  "revised")
+
+    if source == "pdf":
+        _validate_pdf(original_path, "original")
+        _validate_pdf(revised_path,  "revised")
+    else:
+        _validate_solidworks(original_path, "original")
+        _validate_solidworks(revised_path,  "revised")
 
     job_id  = args.job_id or str(uuid.uuid4())
     out_dir = Path(args.out_dir).expanduser().resolve()
@@ -71,24 +96,35 @@ def _cmd_compare(args: argparse.Namespace) -> int:
         datefmt="%H:%M:%S",
     )
 
-    # Imported here so logging.basicConfig above wins over any handler set
-    # at module import time inside the pipeline modules.
-    from pipeline.local_runner import run_comparison_local
-
     log = logging.getLogger("drawdiff.cli")
-    log.info("Job %s — original=%s revised=%s", job_id, original_path.name, revised_path.name)
+    log.info("Job %s [source=%s] — original=%s revised=%s",
+             job_id, source, original_path.name, revised_path.name)
     log.info("Output → %s", job_dir)
 
     started = time.time()
     try:
-        result = run_comparison_local(
-            job_id=job_id,
-            original_pdf=original_path.read_bytes(),
-            revised_pdf=revised_path.read_bytes(),
-            part_number=args.part_number,
-            notes=args.notes,
-            job_dir=job_dir,
-        )
+        if source == "pdf":
+            # Imported here so logging.basicConfig above wins over any handler set
+            # at module import time inside the pipeline modules.
+            from pipeline.local_runner import run_comparison_local
+            result = run_comparison_local(
+                job_id=job_id,
+                original_pdf=original_path.read_bytes(),
+                revised_pdf=revised_path.read_bytes(),
+                part_number=args.part_number,
+                notes=args.notes,
+                job_dir=job_dir,
+            )
+        else:
+            from pipeline.solidworks_runner import run_comparison_solidworks
+            result = run_comparison_solidworks(
+                job_id=job_id,
+                original_path=original_path,
+                revised_path=revised_path,
+                part_number=args.part_number,
+                notes=args.notes,
+                job_dir=job_dir,
+            )
     except Exception as exc:
         elapsed = time.time() - started
         _err(f"pipeline failed after {elapsed:.1f}s: {type(exc).__name__}: {exc}")
@@ -144,6 +180,9 @@ def _build_parser() -> argparse.ArgumentParser:
                      help="Overwrite an existing non-empty job directory.")
     cmp.add_argument("--verbose", action="store_true",
                      help="Enable DEBUG-level logging and print tracebacks to stderr.")
+    cmp.add_argument("--source", choices=["pdf", "solidworks"], default="pdf",
+                     help="Input source: 'pdf' (vision pipeline, default) or 'solidworks' "
+                          "(geometry deltas via SWCompare service over HTTP).")
     cmp.set_defaults(func=_cmd_compare)
 
     return p

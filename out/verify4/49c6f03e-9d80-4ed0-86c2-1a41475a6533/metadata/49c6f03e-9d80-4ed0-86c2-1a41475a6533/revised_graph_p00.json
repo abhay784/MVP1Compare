@@ -1,0 +1,19 @@
+{
+  "page_index": 0,
+  "parents": [
+    {
+      "label": "ANNOTATION",
+      "cut_ids": []
+    },
+    {
+      "label": "ISO_FRONT",
+      "cut_ids": []
+    },
+    {
+      "label": "ISO_REAR",
+      "cut_ids": []
+    }
+  ],
+  "derived": [],
+  "part_summary": "A rectangular bracket or clamp block with slotted openings, counterbored/through holes at corners, and interlocking stepped features, shown in two isometric views (front-side and rear-side perspectives) on sheet 1 of 3."
+}

@@ -1,0 +1,326 @@
+{
+  "job_id": "3ee0b4d0-0792-4947-ac7b-f32e4a108eb6",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION C-C",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": "16X R.030",
+          "revised_value": "8X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "[deduped across views] The quantity multiplier for the R.030 radius on the pocket corners in the front view changed from 16X to 8X, indicating either a reduction in the number of radiused corners or a re-categorization of the radii into separate groups, which affects manufacturing instructions.",
+          "confirmed_by": [],
+          "impact": ""
+        },
+        {
+          "field": "note",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "TAP FOR #4-40 HELICAL INSERTS",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "[deduped across views] The thread insert callout terminology changed from 'HELICOIL' (brand name) to 'HELICAL INSERTS' (generic term), which is a documentation/standardization change but does not alter the functional specification.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 4,
+      "rev_index": 4,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "C-C"
+    },
+    {
+      "label": "ANNOTATION",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Upper-left isometric view shows a rounded top flange/boss feature on the bracket",
+          "revised_value": "Upper-left isometric view shows the same bracket but the rounded top flange/boss feature appears removed or modified",
+          "severity": "CRITICAL",
+          "confidence": 0.7,
+          "rationale": "Comparing the left isometric view, the original shows a distinct rounded protrusion/boss at the top of the bracket that appears absent or significantly altered in the revised view, which could affect assembly fit.",
+          "confirmed_by": [],
+          "impact": ""
+        },
+        {
+          "field": "annotation",
+          "orig_value": "REV: NC",
+          "revised_value": "REV: A",
+          "severity": "MAJOR",
+          "confidence": 0.95,
+          "rationale": "The part revision level in Note 3 (P/N identification block) has been updated from NC to A, indicating a formal revision increment.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_FRONT",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Upper flange/boss region shows a single continuous curved profile with one raised arch connecting to the flange, with a relatively thick/solid upper flange section",
+          "revised_value": "Upper flange/boss region shows a modified profile with the flange appearing thinner/extended further outward and the arch profile reshaped, with additional curvature detail visible on the left side of the upper flange and a more pronounced undercut or relief between the arch and the flange body",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The upper mounting boss and flange geometry has been revised \u2014 the flange appears extended/thinned and the transition profile between the curved boss and the flat flange has changed shape, which could affect structural stiffness and fit at the mating interface.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_REAR",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp/square interior corners at the left-side pocket/slot transitions (upper and lower left internal corners appear as sharp right-angle intersections)",
+          "revised_value": "Filleted/radiused interior corners at the left-side pocket/slot transitions (upper and lower left internal corners now show visible blend radii)",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The internal corners of the rectangular pockets on the left side of the part appear to have had sharp corners replaced with blend radii in the revised view, which affects stress concentration, machinability requirements, and potentially fit with mating components.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_1",
+      "match_type": "matched",
+      "changes": [],
+      "orig_index": 3,
+      "rev_index": 3,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "dimension",
+          "orig_value": null,
+          "revised_value": "4X R.093",
+          "severity": "MAJOR",
+          "confidence": 0.9,
+          "rationale": "A new radius callout '4X R.093' has been added to the mounting boss features, specifying fillet radii that were previously undefined in this view.",
+          "confirmed_by": [],
+          "impact": ""
+        },
+        {
+          "field": "geometry",
+          "orig_value": "Sharp/small radius corners on upper pocket and lower pocket edges",
+          "revised_value": "Larger visible radii on pocket corners",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The pocket corners in the revised view appear to have noticeably larger radii compared to the original, consistent with the newly added radius callouts and potentially affecting tool path and fit.",
+          "confirmed_by": [],
+          "impact": ""
+        },
+        {
+          "field": "callout",
+          "orig_value": ".165 X 90\u00b0, NEAR SIDE\nTAP FOR #4-40 HELICOIL",
+          "revised_value": null,
+          "severity": "UNCERTAIN",
+          "confidence": 0.55,
+          "rationale": "The helicoil tap note visible in the original upper-left corner appears to have been repositioned or is cropped differently in the revised view; the text is partially cut off in both but the visible portion differs.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 6,
+      "rev_index": 6,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "4X R.093",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "[deduped across views] A new radius callout '4X R.093' has been added in the revised view, specifying four corner radii that were not explicitly called out in the original, which affects machining requirements for the boss/pocket corners.",
+          "confirmed_by": [],
+          "impact": ""
+        },
+        {
+          "field": "note",
+          "orig_value": "4X \u00d8 .120 THRU\nX 90\u00b0, NEAR SIDE\nR #4-40 HELICOIL",
+          "revised_value": "E INSERTS (partial, truncated at top)",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The hole and helicoil callout text visible in the original ('4X \u00d8 .120 THRU ... #4-40 HELICOIL') appears to have been revised or reformatted in the revised view where only a partial truncated note 'E INSERTS' is visible, suggesting the callout wording or format has changed.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 7,
+      "rev_index": 7,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Mounting boss profile shown with sharp/undefined blend between boss and top flange",
+          "revised_value": "Mounting boss profile shown with smooth continuous fillet blending into top flange",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "The revised view shows a smoother, more clearly defined fillet geometry at the base of the mounting bosses compared to the original, consistent with the newly added R.093 callout defining that blend radius.",
+          "confirmed_by": [],
+          "impact": ""
+        },
+        {
+          "field": "note",
+          "orig_value": "NEAR SIDE (partial text visible at top)",
+          "revised_value": null,
+          "severity": "MINOR",
+          "confidence": 0.72,
+          "rationale": "The partial 'NEAR SIDE' note visible in the upper-left of the original view is no longer present in the revised view, suggesting a note or label was removed or relocated.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 8,
+      "rev_index": 8,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp/straight corner transition between mounting boss base and main body (top region, left and right sides)",
+          "revised_value": "Radiused/filleted corner transition between mounting boss base and main body (top region, left and right sides)",
+          "severity": "MAJOR",
+          "confidence": 0.82,
+          "rationale": "The original shows a sharp step-down from the mounting boss flanges to the main body surface, while the revised view shows a smooth curved fillet at those transitions, indicating a geometry change to the boss root radii that affects stress concentration and machinability.",
+          "confirmed_by": [],
+          "impact": ""
+        },
+        {
+          "field": "annotation",
+          "orig_value": "Leader arrow pointing to upper-left mounting boss circle (top of view)",
+          "revised_value": "Leader arrow repositioned or pointing to left pocket upper-left corner area (mid-left of view)",
+          "severity": "MINOR",
+          "confidence": 0.65,
+          "rationale": "A small leader arrow visible in the upper-left of the original appears to have moved or a second arrow appears near the upper-left of the pocket region in the revised view, suggesting a callout was repositioned or reassigned.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": 10,
+      "rev_index": 10,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 11,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "confirmed_by": [],
+          "impact": ""
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 12,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    }
+  ]
+}

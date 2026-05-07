@@ -1,0 +1,156 @@
+{
+  "job_id": "f6ff0930-0ef3-4a41-88c2-e2ab66be8ad7",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None"
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null
+    },
+    {
+      "label": "ISO_LEFT_VIEW",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Hinge knuckle/barrel region shows a flat or stepped transition between the two barrel lobes at the top of the part",
+          "revised_value": "Hinge knuckle/barrel region shows a continuous concave curved (filleted/relieved) transition between the two barrel lobes at the top of the part",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The geometry of the hinge barrel connection area has changed from what appears to be a flat/stepped profile to a concave curved relief, which would affect the hinge pivot clearance, stress concentration, and potentially the fit with a mating pin or leaf."
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0
+    },
+    {
+      "label": "ISO_RIGHT_VIEW",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Upper bracket/yoke feature shown with a raised rectangular bar/rib spanning between the two upper bosses, creating a stepped profile with a distinct horizontal flat top",
+          "revised_value": "Upper bracket/yoke feature shown with a smooth curved/arched profile between the two upper bosses, without the raised rectangular bar/rib",
+          "severity": "MAJOR",
+          "confidence": 0.82,
+          "rationale": "The upper connecting feature between the two boss/bearing housings changed from a flat-topped rectangular bar geometry to a smooth curved arch, indicating a significant shape modification that affects material distribution and potentially structural performance."
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "callout",
+          "orig_value": "R .030\nALL AROUND",
+          "revised_value": "4X R .030",
+          "severity": "MAJOR",
+          "confidence": 0.9,
+          "rationale": "The radius callout for the slot corners changed from 'R .030 ALL AROUND' to '4X R .030', altering how the radius application scope is specified \u2014 'ALL AROUND' implies continuous application whereas '4X' specifies exactly four discrete instances, which could affect machining interpretation and resulting geometry."
+        },
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "TAP",
+          "severity": "MAJOR",
+          "confidence": 0.82,
+          "rationale": "A 'TAP' label has been added in the upper right corner of the revised view that was not present in the original, indicating a tapping operation is now called out for this feature."
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2
+    },
+    {
+      "label": "FRONT_VIEW",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "callout",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "FOR #4-40 HELICAL INSERTS",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "The fastener insert callout changed from 'HELICOIL' (a brand-specific helical insert) to generic 'HELICAL INSERTS', which may affect procurement and installation specifications."
+        },
+        {
+          "field": "dimension",
+          "orig_value": null,
+          "revised_value": "8X R.063",
+          "severity": "MAJOR",
+          "confidence": 0.88,
+          "rationale": "A new radius callout of 8X R.063 has been added in the revised drawing near the 2X .529 dimension, indicating new or changed fillet radii on the pocket/feature."
+        },
+        {
+          "field": "geometry",
+          "orig_value": "Pocket corners with smaller radii (R.030)",
+          "revised_value": "Pocket corners with larger radii (R.063)",
+          "severity": "MAJOR",
+          "confidence": 0.85,
+          "rationale": "The internal pocket corner radii appear to have changed from R.030 to R.063, which affects tooling requirements and part geometry."
+        },
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "(4X R.0",
+          "severity": "UNCERTAIN*",
+          "confidence": 0.55,
+          "rationale": "A partially visible new annotation '(4X R.0...' appears on the right side of the revised drawing that was not present in the original; the full value is cut off and cannot be confirmed. [possible match: SECTION C-C]"
+        }
+      ],
+      "orig_index": 3,
+      "rev_index": 3
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "(.30)",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "A new reference dimension callout '(.30)' with a leader arrow pointing to the mid-section fillet/groove feature has been added in the revised drawing, which was not present in the original and may affect manufacturing interpretation of that feature."
+        }
+      ],
+      "orig_index": 4,
+      "rev_index": 4
+    },
+    {
+      "label": "SECTION C-C",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "4X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "A new radius callout '4X R.030' with a leader pointing to the corner of the section profile has been added in the revised drawing, specifying a corner radius that was not previously called out, which affects manufacturing of the part edges."
+        }
+      ],
+      "orig_index": 5,
+      "rev_index": 5
+    }
+  ]
+}

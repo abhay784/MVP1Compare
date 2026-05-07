@@ -1,0 +1,38 @@
+{
+  "page_index": 1,
+  "parents": [
+    {
+      "label": "ANNOTATION",
+      "cut_ids": [
+        "C-C",
+        "A-A",
+        "B-B"
+      ]
+    },
+    {
+      "label": "MAIN_TOP",
+      "cut_ids": []
+    }
+  ],
+  "derived": [
+    {
+      "label": "SECTION C-C",
+      "parent_label": "ANNOTATION",
+      "cut_id": "C-C",
+      "describes": "horizontal cross-section through the mid-height of the part showing wall thickness and pocket floor"
+    },
+    {
+      "label": "SECTION A-A",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A",
+      "describes": "vertical cross-section through the mounting hole columns on the right side"
+    },
+    {
+      "label": "SECTION B-B",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B",
+      "describes": "vertical cross-section through the central pocket region between the two hole pairs"
+    }
+  ],
+  "part_summary": "A symmetric bracket or housing with two rectangular pockets, four mounting holes with helical inserts, and rounded corners, shown in a top/front view with three cross-sections detailing wall profiles and hole geometry."
+}

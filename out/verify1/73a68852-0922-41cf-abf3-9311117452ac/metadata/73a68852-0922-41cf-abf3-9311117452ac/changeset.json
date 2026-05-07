@@ -1,0 +1,332 @@
+{
+  "job_id": "73a68852-0922-41cf-abf3-9311117452ac",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None"
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_1",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": "REV: NC",
+          "revised_value": "REV: A",
+          "severity": "MAJOR",
+          "confidence": 0.95,
+          "rationale": "The drawing revision level in Note 3 (P/N identification block) changed from NC to A, indicating a formal revision increment that affects part traceability."
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_2",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Upper flange/clamp arm is a single solid curved profile with no cutout or relief between the two curved bosses",
+          "revised_value": "Upper flange/clamp arm shows a relief cutout or slot between the two curved bosses, creating a thinner web/bridge section visible in the isometric view",
+          "severity": "MAJOR",
+          "confidence": 0.78,
+          "rationale": "The revised view shows a distinct geometric cutout or relief feature between the two upper curved mounting bosses that is absent in the original, indicating a material removal change that could affect structural stiffness and clamping function of the upper flange."
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_3",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp interior corners at the left-side vertical edges of the upper and lower recessed pocket openings (left face)",
+          "revised_value": "Filleted/radiused interior corners at the left-side vertical edges of the upper and lower recessed pocket openings (left face)",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "The revised view shows curved/filleted transitions at the interior corners of the left-face pocket openings where the original had sharp right-angle corners, indicating a geometry change that affects stress concentration and potentially toolpath/manufacturing requirements."
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Rectangular pocket corners in main view appear with single radius callout grouping",
+          "revised_value": "Pocket corners now show separate R.093 (boss area) and R.063 (pocket area) callouts with revised quantities",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "The radius callout structure across the main view was reorganized with new distinct radius values (R.093) added and existing radius quantities redistributed, suggesting geometric changes or clarification of corner radii on different features."
+        },
+        {
+          "field": "note",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "TAP FOR #4-40 HELICAL INSERTS",
+          "severity": "MINOR",
+          "confidence": 0.92,
+          "rationale": "[deduped across views] The insert type callout wording changed from 'HELICOIL' (brand name) to 'HELICAL INSERTS' (generic term), which is a documentation/nomenclature change that does not affect the thread specification or hole geometry."
+        }
+      ],
+      "orig_index": 3,
+      "rev_index": 3,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": "16X R.030",
+          "revised_value": "8X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.9,
+          "rationale": "[deduped across views] The count of R.030 radii on the rectangular pocket corners changed from 16X to 8X, indicating either a reduction in the number of radiused corners or a re-attribution of some radii to a different callout, which affects machining requirements."
+        }
+      ],
+      "orig_index": 4,
+      "rev_index": 4,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE SIDE",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Rectangular pockets with uniform R.030 corners (16 total)",
+          "revised_value": "Rectangular pockets with mixed radii: 4X R.093 outer corners and 8X R.030 inner corners",
+          "severity": "MAJOR",
+          "confidence": 0.78,
+          "rationale": "The pocket geometry appears to have been revised to use larger radii on outer corners and smaller radii on inner corners, changing the machining profile and potentially the fit of mating components."
+        }
+      ],
+      "orig_index": 5,
+      "rev_index": 7,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE SIDE",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "callout",
+          "orig_value": null,
+          "revised_value": "4X R.093",
+          "severity": "MAJOR",
+          "confidence": 0.82,
+          "rationale": "A new radius callout of 4X R.093 has been added in the revised drawing, specifying fillet radii on the bracket features that were not explicitly called out before."
+        },
+        {
+          "field": "geometry",
+          "orig_value": "Sharp/square upper-left corner on bracket body",
+          "revised_value": "Radiused/filleted upper-left corner on bracket body",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The upper-left corner of the bracket body outline appears to have changed from a sharp corner to a visible radius, consistent with the new R.093 or R.030 callouts."
+        },
+        {
+          "field": "annotation",
+          "orig_value": "Section line labeled C-C with arrows on both sides",
+          "revised_value": "Section line C-C arrows appear repositioned/restyled; additional section cut line (A-B) visible at top",
+          "severity": "UNCERTAIN*",
+          "confidence": 0.6,
+          "rationale": "The section cutting plane indicators appear to have been adjusted; the C-C section line dashes on the left side are shorter/repositioned, and new section arrows (A, B) are visible at the top of the revised view. [possible match: VIEW_1]"
+        }
+      ],
+      "orig_index": 6,
+      "rev_index": 9,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "SECTION B-B with cross-section detail showing 2X .125, .254, 2X .085, 0, 4X R.030, .254, 2X R.063, .558, .250",
+          "severity": "MAJOR",
+          "confidence": 0.85,
+          "rationale": "A new Section B-B cross-section view has been added to the revised drawing, providing internal wall profile dimensions and radii not previously shown, which defines manufacturing geometry for the pocket walls."
+        }
+      ],
+      "orig_index": 7,
+      "rev_index": 5,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "4X R.093",
+          "severity": "MAJOR",
+          "confidence": 0.85,
+          "rationale": "A new radius callout of 4X R.093 has been added to the revised view, specifying the corner radii on the mounting boss features, which was not present in the original."
+        },
+        {
+          "field": "geometry",
+          "orig_value": "Sharp or unspecified corners on rectangular pockets and outer profile",
+          "revised_value": "Rounded corners explicitly shown with R.093 and R.030 radii",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "The revised view shows clearly radiused corners on the pocket and outer profile features with explicit callouts, whereas the original did not annotate or clearly depict these radii, representing a geometric clarification or change that affects machining."
+        }
+      ],
+      "orig_index": 9,
+      "rev_index": 6,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_8",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp/chamfered corners on top center cutout (notch between mounting bosses)",
+          "revised_value": "Large radius fillets on top center cutout corners",
+          "severity": "CRITICAL",
+          "confidence": 0.92,
+          "rationale": "The top center notch transitions from sharp/square corners to large radiused corners, significantly changing the geometry and stress concentration at those features."
+        }
+      ],
+      "orig_index": 10,
+      "rev_index": 10,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE SIDE' was present in the original but not the revised drawing."
+        }
+      ],
+      "orig_index": 8,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SIDE",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' appears only in the revised drawing."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 8,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SIDE",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' appears only in the revised drawing."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 11,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SIDE",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' appears only in the revised drawing."
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 12,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    }
+  ]
+}

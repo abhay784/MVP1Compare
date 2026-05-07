@@ -274,6 +274,45 @@ pytest
 
 ---
 
+## SOLIDWORKS source (optional)
+
+DrawDiff can compare native SOLIDWORKS files (.SLDPRT / .SLDASM / .SLDDRW) instead of PDFs by talking to the bundled `swcompare/` Windows service. When SOLIDWORKS source files are available, geometry deltas are extracted as ground truth (no vision LLM required) — dimensions, tolerances, features, suppression state, and material come straight from the COM API with `confidence=1.0` and deterministic severity rules.
+
+### Setup
+
+1. **Windows host** (with SOLIDWORKS 2020+ installed): build and run the service.
+   ```powershell
+   cd swcompare
+   dotnet build -c Release
+   dotnet run -c Release --urls "http://0.0.0.0:5050"
+   ```
+   See [swcompare/README.md](swcompare/README.md) for installation as a Windows service and license notes.
+
+2. **Mac/Linux host** (where the Python pipeline runs): point the pipeline at the service.
+   ```
+   # in .env
+   SOLIDWORKS_SERVICE_URL=http://<windows-host>:5050
+   SW_DIM_THRESHOLD_MM=0.1            # dimension delta below this = MINOR
+   SW_EXPORT_DRAWINGS=true            # for .SLDDRW, also run vision pipeline on exported sheets
+   ```
+
+3. **Run a comparison**:
+   ```bash
+   python cli.py compare --source solidworks RevA.SLDPRT RevB.SLDPRT
+   ```
+
+   For drawings, the service exports the sheets to PDF and the runner pipes them through the existing PDF vision pipeline as well, so notes/callouts not tied to model dimensions are still caught. The two changesets are merged.
+
+### Legacy PDF path is unchanged
+
+The existing PDF-to-PDF comparison still works exactly as before — `--source pdf` (default) is the legacy path, useful for vendor / supplier drawings without CAD source. No flag, no behaviour change.
+
+### License
+
+The SOLIDWORKS API is governed by the SOLIDWORKS EULA. You must have a valid SOLIDWORKS license on the host running `swcompare`. We do **not** bundle the SW interop DLLs — they are referenced from your local install at build time.
+
+---
+
 ## Troubleshooting
 
 **Worker prints "Killed horse pid XXXXX"**

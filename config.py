@@ -40,6 +40,13 @@ class Config:
     s3_bucket: str = os.getenv("S3_BUCKET", "")
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
+    # SOLIDWORKS integration (talks to Windows-side SWCompare service over HTTP)
+    solidworks_service_url: str = os.getenv("SOLIDWORKS_SERVICE_URL", "")
+    solidworks_dimension_threshold_mm: float = float(os.getenv("SW_DIM_THRESHOLD_MM", "0.1"))
+    solidworks_export_drawings: bool = os.getenv("SW_EXPORT_DRAWINGS", "true").lower() == "true"
+    solidworks_request_timeout_s: float = float(os.getenv("SW_REQUEST_TIMEOUT_S", "60"))
+    solidworks_reclassify: bool = os.getenv("SW_RECLASSIFY", "false").lower() == "true"
+
     def s3_artifact_key(self, job_id: str, kind: str) -> str:
         ext = {"report": "pdf", "changeset": "json", "original": "pdf", "revised": "pdf"}[kind]
         return f"{kind}s/{job_id}.{ext}"

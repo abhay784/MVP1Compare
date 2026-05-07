@@ -1,0 +1,423 @@
+{
+  "job_id": "49c6f03e-9d80-4ed0-86c2-1a41475a6533",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None",
+          "impact": "Revision field in the title block has been cleared (was 'TS'); document control must confirm the correct revision state before this drawing is released or used for fabrication.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null,
+      "view_role": null,
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION C-C",
+      "match_type": "matched",
+      "changes": [],
+      "orig_index": 4,
+      "rev_index": 4,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "C-C"
+    },
+    {
+      "label": "ANNOTATION",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Top-left isometric view shows a raised rectangular boss/step feature on the upper portion of the front face of the bracket",
+          "revised_value": "Same view shows the raised boss/step feature appears removed or significantly reduced, leaving a more uniform top surface",
+          "severity": "CRITICAL",
+          "confidence": 0.72,
+          "rationale": "The front isometric view appears to show a geometric change on the upper bracket face where a protruding stepped feature visible in the original is not clearly present in the revised view, which could affect fit and function.",
+          "impact": "Potential removal of a structural boss on the upper front face would alter fit to any mating part that locates against or around that feature \u2014 reviewer must verify against assembly interface requirements.",
+          "confirmed_by": []
+        },
+        {
+          "field": "annotation",
+          "orig_value": "REV: NC",
+          "revised_value": "REV: A",
+          "severity": "MAJOR",
+          "confidence": 0.95,
+          "rationale": "The drawing revision level in Note 3 (P/N identification block) changed from NC to A, indicating a formal revision increment that affects part traceability.",
+          "impact": "Formal revision increment from NC to A affects part traceability and configuration management; all associated BOMs and procurement records must be updated to reference Rev A.",
+          "confirmed_by": []
+        },
+        {
+          "field": "other",
+          "orig_value": "DWG. NO.: XXXXX, SIZE B, SCALE NONE, SHEET 1 OF 3, with NEXT ASSY / USED ON / APPLICATION blocks and projection symbol visible",
+          "revised_value": "DWG. NO.: DA1840189, SCALE NONE, SHEET 1 OF 3; title block reformatted with fewer visible fields and no NEXT ASSY/USED ON/APPLICATION labels",
+          "severity": "MAJOR",
+          "confidence": 0.85,
+          "rationale": "The drawing number changed from placeholder 'XXXXX' to an actual part number 'DA1840189', and the title block layout was updated, which is significant for document control and part identification.",
+          "impact": "Placeholder drawing number replaced with actual part number DA1840189; removal of NEXT ASSY/USED ON fields reduces traceability visibility in the title block and should be confirmed as intentional per document control policy.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_FRONT",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Left mounting boss/tab has a straight/angular transition from the rolled cylindrical lug to the flat face",
+          "revised_value": "Left mounting boss/tab has a larger, more pronounced curved (S-shaped) transition from the rolled cylindrical lug to the flat face",
+          "severity": "MAJOR",
+          "confidence": 0.78,
+          "rationale": "The left lug/boss area shows a changed fillet or curved transition geometry between the rolled cylindrical feature and the main body, which affects the structural form and potentially the stress distribution of the bracket.",
+          "impact": "Changed lug-to-body transition geometry affects stress distribution at the mounting boss and may require updated FEA or stress review; toolpath programming for this feature will also need revision.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "ISO_REAR",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Sharp interior corners at left-side vertical edges of upper and lower slot/pocket openings (left face)",
+          "revised_value": "Filleted/radiused interior corners at left-side vertical edges of upper and lower slot/pocket openings (left face)",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "The revised view shows rounded/filleted transitions at the interior corners of the left-face pocket openings where the original shows sharp corners, indicating a geometry change that affects stress concentration and potentially machining requirements.",
+          "impact": "Addition of fillets at previously sharp interior pocket corners reduces stress concentration and improves fatigue life, but requires updated machining operations (e.g., radius end mill pass) and inspection criteria.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_1",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": "16X R.030",
+          "revised_value": "8X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "[deduped across views] The quantity of R.030 radii in the main front view changed from 16X to 8X, indicating fewer corner radii are specified at this value, which affects the geometry of the part.",
+          "impact": "Halving the count of R.030 radius callouts means eight corner radii are no longer specified at this value \u2014 machinist must confirm which corners are affected and whether they now carry a different radius or are left as-machined per general tolerance note.",
+          "confirmed_by": []
+        },
+        {
+          "field": "note",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "TAP FOR #4-40 HELICAL INSERTS",
+          "severity": "MINOR",
+          "confidence": 0.95,
+          "rationale": "[deduped across views] The thread insert callout wording changed from 'HELICOIL' (brand name) to 'HELICAL INSERTS' (generic term), which is a documentation/terminology change but does not alter the functional specification.",
+          "impact": "Purely a terminology change from brand name to generic descriptor; no functional or dimensional change to the thread insert specification \u2014 cosmetic/documentation only.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 3,
+      "rev_index": 3,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "matched",
+      "changes": [],
+      "orig_index": 5,
+      "rev_index": 5,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "Removal of the SIDE view reduces orthographic coverage; reviewer should confirm that the new section views (A-A, B-B) fully replace the dimensional and geometric information previously conveyed by this view.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 6,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "Removal of the SIDE view reduces orthographic coverage; reviewer should confirm that the new section views (A-A, B-B) fully replace the dimensional and geometric information previously conveyed by this view.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 7,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "Removal of the SIDE view reduces orthographic coverage; reviewer should confirm that the new section views (A-A, B-B) fully replace the dimensional and geometric information previously conveyed by this view.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 8,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SIDE",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "SIDE",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SIDE' was present in the original but not the revised drawing.",
+          "impact": "Removal of the SIDE view reduces orthographic coverage; reviewer should confirm that the new section views (A-A, B-B) fully replace the dimensional and geometric information previously conveyed by this view.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 9,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "VIEW_8",
+      "match_type": "removed",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": "VIEW_8",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'VIEW_8' was present in the original but not the revised drawing.",
+          "impact": "VIEW_8 has been removed from the revised drawing; any dimensions or callouts unique to that view must be verified as captured elsewhere in the revised drawing set.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": 10,
+      "rev_index": null,
+      "view_role": "parent",
+      "parent_label": null,
+      "cut_id": null
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, providing cross-sectional detail not previously shown; manufacturing and inspection must incorporate this view's dimensions and tolerances into their processes.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 6,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, providing cross-sectional detail not previously shown; manufacturing and inspection must incorporate this view's dimensions and tolerances into their processes.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 7,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, providing cross-sectional detail not previously shown; manufacturing and inspection must incorporate this view's dimensions and tolerances into their processes.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 8,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, providing cross-sectional detail not previously shown; manufacturing and inspection must incorporate this view's dimensions and tolerances into their processes.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 9,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION A-A",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION A-A' appears only in the revised drawing.",
+          "impact": "New Section A-A added to the revised drawing, providing cross-sectional detail not previously shown; manufacturing and inspection must incorporate this view's dimensions and tolerances into their processes.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 10,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "A-A"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "impact": "New Section B-B added to the revised drawing; as with Section A-A, all dimensions and tolerances shown must be incorporated into manufacturing planning and first-article inspection.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 11,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "added",
+      "changes": [
+        {
+          "field": "view",
+          "orig_value": null,
+          "revised_value": "SECTION B-B",
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "View 'SECTION B-B' appears only in the revised drawing.",
+          "impact": "New Section B-B added to the revised drawing; as with Section A-A, all dimensions and tolerances shown must be incorporated into manufacturing planning and first-article inspection.",
+          "confirmed_by": []
+        }
+      ],
+      "orig_index": null,
+      "rev_index": 12,
+      "view_role": "derived",
+      "parent_label": "ANNOTATION",
+      "cut_id": "B-B"
+    }
+  ],
+  "executive_summary": "The most critical change to DA1840189 is the apparent removal or significant reduction of a raised rectangular boss/step feature on the upper front face of the bracket, which directly affects part geometry, fit to mating assemblies, and structural function. Supporting this scope of revision, the drawing has been substantially restructured: the SIDE view and VIEW_8 have been removed and replaced with new Section A-A and Section B-B cut views, providing improved internal detail disclosure. Several geometry changes accompany the view restructuring, including the addition of fillets at previously sharp interior pocket corners on the rear face, a modified S-curve transition at the left mounting lug, and a reduction in the count of R.030 radii callouts from 16X to 8X \u2014 all of which carry manufacturing and stress-concentration implications. Document control changes are also significant: the drawing number was formalized from placeholder 'XXXXX' to DA1840189, the revision level incremented from NC to A, and the title block revision field was cleared, requiring reconciliation before release."
+}

@@ -1,0 +1,407 @@
+{
+  "job_id": "2fd37037-1fc4-4967-b49b-15e52ceb8631",
+  "part_number": "P-001",
+  "notes": "",
+  "original": {
+    "views": [
+      {
+        "index": 0,
+        "page_index": 0,
+        "view_label": "ISO_LEFT",
+        "area_fraction": 0.153,
+        "bbox": [
+          514.0799999999999,
+          71.28,
+          881.28,
+          475.2
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/original/view_00.png",
+        "dimensions": []
+      },
+      {
+        "index": 1,
+        "page_index": 0,
+        "view_label": "ISO_RIGHT",
+        "area_fraction": 0.1785,
+        "bbox": [
+          795.6,
+          71.28,
+          1224.0,
+          475.2
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/original/view_01.png",
+        "dimensions": []
+      },
+      {
+        "index": 2,
+        "page_index": 1,
+        "view_label": "SECTION B-B",
+        "area_fraction": 0.1392,
+        "bbox": [
+          36.72,
+          95.03999999999999,
+          330.48,
+          554.4
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/original/view_02.png",
+        "dimensions": [
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              275.1950378417969,
+              306.5538330078125,
+              282.070068359375,
+              323.42822265625
+            ]
+          },
+          {
+            "value": "1.558",
+            "numeric": 1.558,
+            "bbox": [
+              61.10648727416992,
+              306.5538635253906,
+              92.04408264160156,
+              323.4282531738281
+            ]
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "page_index": 1,
+        "view_label": "FRONT_VIEW",
+        "area_fraction": 0.32639999999999997,
+        "bbox": [
+          330.48,
+          47.519999999999996,
+          954.72,
+          554.4
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/original/view_03.png",
+        "dimensions": [
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              778.5010986328125,
+              83.9252700805664,
+              795.37548828125,
+              90.80029296875
+            ]
+          },
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              832.3280029296875,
+              306.56451416015625,
+              839.2030029296875,
+              323.43890380859375
+            ]
+          },
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              366.16180419921875,
+              306.571533203125,
+              373.0368347167969,
+              323.4459228515625
+            ]
+          },
+          {
+            "value": "1.450",
+            "numeric": 1.45,
+            "bbox": [
+              413.0992126464844,
+              533.1248779296875,
+              429.9736022949219,
+              564.0624389648438
+            ]
+          },
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              778.5010986328125,
+              533.130615234375,
+              795.37548828125,
+              540.005615234375
+            ]
+          },
+          {
+            "value": "1.390",
+            "numeric": 1.39,
+            "bbox": [
+              428.2179870605469,
+              533.1316528320312,
+              445.0923767089844,
+              564.070556640625
+            ]
+          }
+        ]
+      },
+      {
+        "index": 4,
+        "page_index": 1,
+        "view_label": "SECTION A-A",
+        "area_fraction": 0.13199999999999998,
+        "bbox": [
+          954.72,
+          79.2,
+          1224.0,
+          554.4
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/original/view_04.png",
+        "dimensions": [
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              997.225341796875,
+              306.57037353515625,
+              1004.100341796875,
+              323.44476318359375
+            ]
+          }
+        ]
+      },
+      {
+        "index": 5,
+        "page_index": 1,
+        "view_label": "SECTION C-C",
+        "area_fraction": 0.1275,
+        "bbox": [
+          330.48,
+          570.24,
+          954.72,
+          768.24
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/original/view_05.png",
+        "dimensions": []
+      }
+    ],
+    "is_raster": false,
+    "page_width_pt": 1224.0,
+    "page_height_pt": 792.0,
+    "page_s3_keys": [
+      "pages/2fd37037-1fc4-4967-b49b-15e52ceb8631/original_p00.png",
+      "pages/2fd37037-1fc4-4967-b49b-15e52ceb8631/original_p01.png"
+    ],
+    "title_block": {
+      "part_number": null,
+      "revision": "TS",
+      "material": null,
+      "tolerance": null,
+      "drawn_by": null,
+      "date": null,
+      "raw_text": "1\n2\n3\n1\n2\n3\n1\n2\n3\nREV\nTS:\nNONE\nCAGE CODE:\nSHEET\nSCALE:\nDWG.  NO.\nB\nSIZE\nXXXXX\nNC\n1 OF 3"
+    },
+    "revision_block": {
+      "entries": [],
+      "raw_text": "2\n1\n2\n1\n2\n1\nD\nREVISION TABLE\nREV\nDESCRIPTION\nDATE\nAPPROVAL\nNC\nINITIAL RELEASE & SEE EO.\n06/28/25"
+    }
+  },
+  "revised": {
+    "views": [
+      {
+        "index": 0,
+        "page_index": 0,
+        "view_label": "ISO_LEFT",
+        "area_fraction": 0.153,
+        "bbox": [
+          514.0799999999999,
+          71.28,
+          881.28,
+          475.2
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised/view_00.png",
+        "dimensions": []
+      },
+      {
+        "index": 1,
+        "page_index": 0,
+        "view_label": "ISO_RIGHT",
+        "area_fraction": 0.1785,
+        "bbox": [
+          795.6,
+          71.28,
+          1224.0,
+          475.2
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised/view_01.png",
+        "dimensions": []
+      },
+      {
+        "index": 2,
+        "page_index": 1,
+        "view_label": "SECTION B-B",
+        "area_fraction": 0.1392,
+        "bbox": [
+          36.72,
+          95.03999999999999,
+          330.48,
+          554.4
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised/view_02.png",
+        "dimensions": [
+          {
+            "value": "1.558",
+            "numeric": 1.558,
+            "bbox": [
+              61.10648727416992,
+              305.5415344238281,
+              92.04408264160156,
+              322.4159240722656
+            ]
+          },
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              275.195068359375,
+              305.5415344238281,
+              282.0700988769531,
+              322.4159240722656
+            ]
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "page_index": 1,
+        "view_label": "FRONT_VIEW",
+        "area_fraction": 0.32639999999999997,
+        "bbox": [
+          330.48,
+          47.519999999999996,
+          954.72,
+          554.4
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised/view_03.png",
+        "dimensions": [
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              812.92041015625,
+              82.91287994384766,
+              829.7947998046875,
+              89.78790283203125
+            ]
+          },
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              876.4686889648438,
+              305.5522155761719,
+              883.3436889648438,
+              322.4266052246094
+            ]
+          },
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              400.5734558105469,
+              305.5687561035156,
+              407.448486328125,
+              322.4431457519531
+            ]
+          },
+          {
+            "value": "1.450",
+            "numeric": 1.45,
+            "bbox": [
+              447.5185241699219,
+              532.1124267578125,
+              464.3929138183594,
+              563.050048828125
+            ]
+          },
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              812.92041015625,
+              532.1181640625,
+              829.7947998046875,
+              538.9931640625
+            ]
+          },
+          {
+            "value": "1.390",
+            "numeric": 1.39,
+            "bbox": [
+              462.6372985839844,
+              532.1192016601562,
+              479.5116882324219,
+              563.0581665039062
+            ]
+          }
+        ]
+      },
+      {
+        "index": 4,
+        "page_index": 1,
+        "view_label": "SECTION A-A",
+        "area_fraction": 0.13199999999999998,
+        "bbox": [
+          954.72,
+          79.2,
+          1224.0,
+          554.4
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised/view_04.png",
+        "dimensions": [
+          {
+            "value": "0",
+            "numeric": 0.0,
+            "bbox": [
+              997.225341796875,
+              305.55792236328125,
+              1004.100341796875,
+              322.43231201171875
+            ]
+          }
+        ]
+      },
+      {
+        "index": 5,
+        "page_index": 1,
+        "view_label": "SECTION C-C",
+        "area_fraction": 0.145,
+        "bbox": [
+          330.48,
+          570.24,
+          1040.3999999999999,
+          768.24
+        ],
+        "crop_s3_key": "crops/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised/view_05.png",
+        "dimensions": []
+      }
+    ],
+    "is_raster": false,
+    "page_width_pt": 1224.0,
+    "page_height_pt": 792.0,
+    "page_s3_keys": [
+      "pages/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised_p00.png",
+      "pages/2fd37037-1fc4-4967-b49b-15e52ceb8631/revised_p01.png"
+    ],
+    "title_block": {
+      "part_number": null,
+      "revision": null,
+      "material": null,
+      "tolerance": null,
+      "drawn_by": null,
+      "date": null,
+      "raw_text": "1\n2\n3\n1\n2\n3\n1\n2\n3\nNONE\nDA1840189\n1 OF 3"
+    },
+    "revision_block": {
+      "entries": [],
+      "raw_text": "2\n1\n2\n1\n2\n1\nD\nREVISION TABLE\nREV\nDESCRIPTION\nDATE\nAPPROVAL\nA\nSEE EO\n10/16/25"
+    }
+  }
+}

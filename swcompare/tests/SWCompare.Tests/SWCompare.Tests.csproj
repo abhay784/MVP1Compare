@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      We deliberately do NOT reference SWCompare.csproj here because doing so
+      would pull in the SOLIDWORKS interop assemblies. Instead these tests
+      cover the pure-logic Comparer + ModelSnapshot types, which we duplicate
+      via source-link or partial reference. For now we link the source files
+      directly; production builds wire the full project reference.
+    -->
+    <Compile Include="..\..\Models\ModelSnapshot.cs" Link="Models\ModelSnapshot.cs" />
+    <Compile Include="..\..\Models\Contracts.cs" Link="Models\Contracts.cs" />
+    <Compile Include="..\..\Services\Comparer.cs" Link="Services\Comparer.cs" />
+  </ItemGroup>
+
+</Project>

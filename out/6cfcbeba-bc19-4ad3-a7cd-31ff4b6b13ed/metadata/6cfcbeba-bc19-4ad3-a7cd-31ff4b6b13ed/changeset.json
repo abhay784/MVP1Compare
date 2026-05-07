@@ -1,0 +1,332 @@
+{
+  "job_id": "6cfcbeba-bc19-4ad3-a7cd-31ff4b6b13ed",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None",
+          "orig_bbox": null,
+          "rev_bbox": null,
+          "orig_bbox_pt": [],
+          "rev_bbox_pt": [],
+          "orig_zone": "Title Block",
+          "rev_zone": "Title Block",
+          "zone": "Title Block"
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null
+    },
+    {
+      "label": "ISO_LEFT_VIEW",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Hinge knuckle/barrel shown as cylindrical tube with flat top face and sharp shoulder transition",
+          "revised_value": "Hinge knuckle/barrel shown with full rounded/filleted profile and smooth curved transition along top \u2014 no flat top face or sharp shoulder",
+          "severity": "MAJOR",
+          "confidence": 0.82,
+          "rationale": "The top hinge barrel profile changed from a flat-topped cylindrical knuckle with a distinct shoulder step to a fully rounded knuckle with a smooth continuous fillet transition, indicating a geometric/feature change that affects the physical shape of the hinge barrel and its interface with mating parts.",
+          "orig_bbox": [
+            0.18,
+            0.07,
+            0.65,
+            0.38
+          ],
+          "rev_bbox": [
+            0.18,
+            0.07,
+            0.65,
+            0.38
+          ],
+          "orig_bbox_pt": [
+            [
+              560.1024,
+              106.92,
+              744.192,
+              229.68
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              560.1024,
+              106.92,
+              744.192,
+              229.68
+            ]
+          ],
+          "orig_zone": "A4",
+          "rev_zone": "A4",
+          "zone": "A4"
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0
+    },
+    {
+      "label": "ISO_RIGHT_VIEW",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Top front edge of upper block has a flat/square profile with a visible step or ledge at the top-left corner of the upper boss area",
+          "revised_value": "Top front edge of upper block shows a chamfer or fillet blending the top-left corner of the upper boss area into the main body \u2014 the sharp step/ledge is replaced by a curved/angled transition",
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "The upper-left region of the top block shows a geometric profile change between revisions: the original has a more prominent flat ledge/step at the top front corner near the cylindrical boss, while the revised version shows a smoother chamfered or filleted blend, indicating a functional geometry modification that affects the part envelope and potentially its mating or structural behavior.",
+          "orig_bbox": [
+            0.18,
+            0.1,
+            0.55,
+            0.32
+          ],
+          "rev_bbox": [
+            0.18,
+            0.1,
+            0.55,
+            0.32
+          ],
+          "orig_bbox_pt": [
+            [
+              880.5456,
+              118.80000000000001,
+              1029.996,
+              205.92000000000002
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              880.5456,
+              118.80000000000001,
+              1029.996,
+              205.92000000000002
+            ]
+          ],
+          "orig_zone": "A2",
+          "rev_zone": "A2",
+          "zone": "A2"
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "callout",
+          "orig_value": "R .030\nALL AROUND",
+          "revised_value": "4X R .030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "The radius callout changed from 'R .030 ALL AROUND' to '4X R .030', replacing the all-around specification with an explicit count of 4 instances, which changes the scope and intent of where the radius applies.",
+          "orig_bbox": [
+            0.62,
+            0.54,
+            0.99,
+            0.62
+          ],
+          "rev_bbox": [
+            0.62,
+            0.53,
+            0.99,
+            0.6
+          ],
+          "orig_bbox_pt": [
+            [
+              203.6736,
+              342.46079999999995,
+              303.30719999999997,
+              377.9423999999999
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              203.6736,
+              338.02559999999994,
+              303.30719999999997,
+              369.0719999999999
+            ]
+          ],
+          "orig_zone": "B7",
+          "rev_zone": "B7",
+          "zone": "B7"
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2
+    },
+    {
+      "label": "FRONT_VIEW",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "dimension",
+          "orig_value": "16X R.030",
+          "revised_value": "8X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.9,
+          "rationale": "The quantity of R.030 radius features on the main body was reduced from 16 to 8, indicating a change in the number of corner radii of this size applied to the part.",
+          "orig_bbox": [
+            0.05,
+            0.24,
+            0.22,
+            0.3
+          ],
+          "rev_bbox": [
+            0.14,
+            0.19,
+            0.32,
+            0.25
+          ],
+          "orig_bbox_pt": [
+            [
+              350.064,
+              167.27039999999997,
+              458.2656,
+              197.20799999999997
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              407.34720000000004,
+              142.3224,
+              521.9136000000001,
+              172.26
+            ]
+          ],
+          "orig_zone": "A6",
+          "rev_zone": "A5",
+          "zone": "A5"
+        },
+        {
+          "field": "note",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "TAP FOR #4-40 HELICAL INSERTS",
+          "severity": "MINOR",
+          "confidence": 0.92,
+          "rationale": "The thread insert brand name 'HELICOIL' was replaced with the generic term 'HELICAL INSERTS', which is a documentation/terminology change but does not alter the functional specification.",
+          "orig_bbox": [
+            0.05,
+            0.1,
+            0.38,
+            0.2
+          ],
+          "rev_bbox": [
+            0.05,
+            0.03,
+            0.38,
+            0.12
+          ],
+          "orig_bbox_pt": [
+            [
+              350.064,
+              97.416,
+              560.1024,
+              147.31199999999998
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              350.064,
+              62.48879999999999,
+              560.1024,
+              107.39519999999999
+            ]
+          ],
+          "orig_zone": "A6",
+          "rev_zone": "A6",
+          "zone": "A6"
+        }
+      ],
+      "orig_index": 3,
+      "rev_index": 3
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "( 4X R.030 )",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "A new reference callout '( 4X R.030 )' has been added in the revised drawing, indicating four corner radii of 0.030 on the slot/pocket feature, which is a new manufacturing requirement not present in the original.",
+          "orig_bbox": null,
+          "rev_bbox": [
+            0.02,
+            0.46,
+            0.42,
+            0.55
+          ],
+          "orig_bbox_pt": [],
+          "rev_bbox_pt": [
+            [
+              960.1056,
+              294.1488,
+              1067.8176,
+              336.20399999999995
+            ]
+          ],
+          "orig_zone": "",
+          "rev_zone": "B2",
+          "zone": "B2"
+        }
+      ],
+      "orig_index": 4,
+      "rev_index": 4
+    },
+    {
+      "label": "SECTION C-C",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "callout",
+          "orig_value": null,
+          "revised_value": "4X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "A new radius callout '4X R.030' with leader pointing to the inner corner of the channel has been added in the revised drawing, specifying four corner radii that were not previously called out, which affects machining and fit requirements.",
+          "orig_bbox": null,
+          "rev_bbox": [
+            0.55,
+            0.18,
+            0.88,
+            0.62
+          ],
+          "orig_bbox_pt": [],
+          "rev_bbox_pt": [
+            [
+              695.232,
+              587.1888,
+              921.4272,
+              667.3392
+            ]
+          ],
+          "orig_zone": "",
+          "rev_zone": "D3",
+          "zone": "D3"
+        }
+      ],
+      "orig_index": 5,
+      "rev_index": 5
+    }
+  ]
+}
