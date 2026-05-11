@@ -164,11 +164,30 @@ def _parse_llm_json(raw: str) -> list[Change]:
             revised_value=item.get("revised_value"),
             severity=str(item.get("severity", "MINOR")).upper(),
             confidence=float(item.get("confidence", 0.0)),
-            rationale=str(item.get("rationale", "")),
+            rationale=_normalise_rationale(item.get("rationale", "")),
             orig_bbox=_coerce_bbox(item.get("orig_bbox")),
             rev_bbox=_coerce_bbox(item.get("rev_bbox")),
         ))
     return out
+
+
+_SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+")
+
+
+def _normalise_rationale(raw: Any) -> str:
+    """Collapse whitespace and keep only the first sentence.
+
+    Why: the prompt asks for one short sentence per change, but models occasionally
+    return multi-sentence rationales. Truncating here keeps the report column tight
+    without losing the model's primary claim.
+    """
+    text = " ".join(str(raw or "").split())
+    if not text:
+        return ""
+    first = _SENTENCE_BOUNDARY.split(text, maxsplit=1)[0].strip()
+    if first and first[-1] not in ".!?":
+        first += "."
+    return first
 
 
 def _coerce_bbox(raw) -> list[float] | None:

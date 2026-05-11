@@ -11,6 +11,7 @@ class Config:
     # Model strategy (§7.3)
     base_model: str = "claude-sonnet-4-6"
     escalation_model: str = "claude-opus-4-6"
+    blueprint_model: str = "claude-sonnet-4-6"  # used by pipeline.template_blueprint
 
     # Thresholds
     confidence_threshold: float = 0.65       # below this → severity rewritten to UNCERTAIN
@@ -28,6 +29,12 @@ class Config:
 
     # Upload guard
     max_file_size_mb: int = 50
+
+    # View isolation (overlap-first segmentation): when True, the local runner
+    # uses pipeline.view_isolator to white-out foreign content from each crop
+    # instead of running pipeline.bbox_snap to move bbox edges. Set to False to
+    # revert to the previous edge-snap behaviour for A/B comparison.
+    use_view_isolator: bool = False
 
     # API auth (Bearer token; leave empty to disable auth in dev)
     api_key: str = os.getenv("API_KEY", "")
@@ -48,7 +55,13 @@ class Config:
     solidworks_reclassify: bool = os.getenv("SW_RECLASSIFY", "false").lower() == "true"
 
     def s3_artifact_key(self, job_id: str, kind: str) -> str:
-        ext = {"report": "pdf", "changeset": "json", "original": "pdf", "revised": "pdf"}[kind]
+        ext = {
+            "report": "pdf",
+            "changeset": "json",
+            "original": "pdf",
+            "revised": "pdf",
+            "template": "pdf",
+        }[kind]
         return f"{kind}s/{job_id}.{ext}"
         
 

@@ -329,3 +329,39 @@ class TestDownscale:
         raw = base64.standard_b64decode(img_block["source"]["data"])
         img = Image.open(io.BytesIO(raw))
         assert img.size == (500, 500)
+
+
+# ---------------------------------------------------------------------------
+# Rationale normaliser
+# ---------------------------------------------------------------------------
+
+class TestRationaleNormalisation:
+    def test_multi_sentence_truncated_to_first(self):
+        from pipeline.comparator import _normalise_rationale
+        out = _normalise_rationale(
+            "Hole diameter increased from Ø10 to Ø12. This affects the fit."
+        )
+        assert out == "Hole diameter increased from Ø10 to Ø12."
+
+    def test_whitespace_collapsed(self):
+        from pipeline.comparator import _normalise_rationale
+        assert _normalise_rationale("  multi   space   no   period ") == "multi space no period."
+
+    def test_empty_and_none(self):
+        from pipeline.comparator import _normalise_rationale
+        assert _normalise_rationale("") == ""
+        assert _normalise_rationale(None) == ""
+
+    def test_parse_llm_json_truncates_rationale(self, patched_comparator):
+        _FakeAnthropic.responses = [json.dumps({
+            "changes": [{
+                "field": "dimension",
+                "orig_value": "X",
+                "revised_value": "Y",
+                "severity": "MAJOR",
+                "confidence": 0.9,
+                "rationale": "First sentence. Second sentence which we do not want.",
+            }],
+        })]
+        diffs = compare_views("job", [_matched()], extraction={})
+        assert diffs[0].changes[0].rationale == "First sentence."

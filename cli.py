@@ -79,6 +79,11 @@ def _cmd_compare(args: argparse.Namespace) -> int:
         _validate_solidworks(original_path, "original")
         _validate_solidworks(revised_path,  "revised")
 
+    template_path: Path | None = None
+    if getattr(args, "template", None):
+        template_path = Path(args.template).expanduser().resolve()
+        _validate_pdf(template_path, "template")
+
     job_id  = args.job_id or str(uuid.uuid4())
     out_dir = Path(args.out_dir).expanduser().resolve()
     job_dir = out_dir / job_id
@@ -114,6 +119,7 @@ def _cmd_compare(args: argparse.Namespace) -> int:
                 part_number=args.part_number,
                 notes=args.notes,
                 job_dir=job_dir,
+                template_pdf=template_path.read_bytes() if template_path else None,
             )
         else:
             from pipeline.solidworks_runner import run_comparison_solidworks
@@ -183,6 +189,9 @@ def _build_parser() -> argparse.ArgumentParser:
     cmp.add_argument("--source", choices=["pdf", "solidworks"], default="pdf",
                      help="Input source: 'pdf' (vision pipeline, default) or 'solidworks' "
                           "(geometry deltas via SWCompare service over HTTP).")
+    cmp.add_argument("--template", default=None,
+                     help="Optional template change-order PDF. When provided, the report "
+                          "mimics this template's section order, headings, and severity wording.")
     cmp.set_defaults(func=_cmd_compare)
 
     return p

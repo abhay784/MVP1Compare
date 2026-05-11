@@ -65,7 +65,9 @@ def test_cross_view_dedup_keeps_highest_confidence():
     all_changes = [ch for vd in result for ch in vd["changes"]]
     assert len(all_changes) == 1
     assert all_changes[0]["confidence"] == pytest.approx(0.90)
-    assert all_changes[0]["rationale"].startswith("[deduped across views]")
+    # Rationale itself is preserved; the dedup fact lives in a side-channel field.
+    assert all_changes[0]["rationale"] == "front rationale"
+    assert all_changes[0]["dedup_note"] == "deduped across views"
 
 
 def test_cross_view_dedup_does_not_merge_added_removed():
@@ -124,7 +126,9 @@ def test_uncertain_promotion_above_threshold():
     side_changes = result2[1]["changes"]
     assert len(side_changes) == 1
     assert side_changes[0]["severity"] == "UNCERTAIN*"
-    assert "[possible match: FRONT]" in side_changes[0]["rationale"]
+    # Rationale stays clean; the "possible match" hint lives on uncertain_note.
+    assert side_changes[0]["rationale"] == "weak2"
+    assert side_changes[0]["uncertain_note"] == "possible match: FRONT"
 
 
 def test_uncertain_promotion_below_threshold():

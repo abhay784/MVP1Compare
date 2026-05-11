@@ -119,6 +119,284 @@ def _encode_image(png_bytes: Optional[bytes]) -> Optional[str]:
     return "data:image/png;base64," + base64.b64encode(png_bytes).decode("ascii")
 
 
+# ---------------------------------------------------------------------------
+# Blueprint rendering — fills the customer-supplied template `html_shell` by
+# substituting [[TOKEN]] placeholders with comparison-data fragments.
+# ---------------------------------------------------------------------------
+
+import html as _html
+
+
+def _esc(value: Any) -> str:
+    if value is None:
+        return ""
+    return _html.escape(str(value), quote=True)
+
+
+def _fmt_zone(zone: Any) -> str:
+    """Render a zone string for display. Empty → '—'."""
+    z = (zone or "").strip() if isinstance(zone, str) else ""
+    return z or "—"
+
+
+def _render_summary_fragment(summary: dict, severity_labels: dict[str, str]) -> str:
+    cells = [
+        ("CRITICAL",   "sev-CRITICAL",   summary["critical"]),
+        ("MAJOR",      "sev-SIGNIFICANT", summary["significant"]),
+        ("MINOR",      "sev-MINOR",      summary["minor"]),
+        ("UNCERTAIN",  "sev-UNCERTAIN",  summary["uncertain"]),
+    ]
+    parts = ['<div class="drawdiff-summary" style="display:table;width:100%;margin:6pt 0 12pt 0;">']
+    for sev, klass, n in cells:
+        label = severity_labels.get(sev, _SEVERITY_DISPLAY.get(sev, sev).title())
+        parts.append(
+            f'<div class="cell {klass}" style="display:table-cell;padding:6pt;'
+            f'text-align:center;border:1px solid #ccc;">'
+            f'<span style="font-size:22pt;font-weight:bold;display:block;">{n}</span>'
+            f'{_esc(label)}</div>'
+        )
+    parts.append(
+        f'<div class="cell" style="display:table-cell;padding:6pt;text-align:center;'
+        f'border:1px solid #ccc;">'
+        f'<span style="font-size:22pt;font-weight:bold;display:block;">'
+        f'{summary["total_views_compared"]}</span>Views compared</div>'
+    )
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def _render_title_block_fragment(orig: dict, rev: dict) -> str:
+    fields = ["part_number", "revision", "material", "tolerance", "drawn_by", "date"]
+    rows = []
+    for f in fields:
+        ov = orig.get(f, "") or ""
+        rv = rev.get(f, "") or ""
+        diff = ' class="diff"' if ov != rv else ""
+        rows.append(
+            f'<tr{diff}><td><strong>{_esc(f)}</strong></td>'
+            f'<td>{_esc(ov)}</td><td>{_esc(rv)}</td></tr>'
+        )
+    return (
+        '<table class="drawdiff-title-block">'
+        '<thead><tr><th>Field</th><th>Original</th><th>Revised</th></tr></thead>'
+        f'<tbody>{"".join(rows)}</tbody></table>'
+    )
+
+
+def _render_revision_block_fragment(orig_entries: list, rev_entries: list) -> str:
+    added = [e for e in rev_entries if e not in orig_entries]
+    removed = [e for e in orig_entries if e not in rev_entries]
+    parts = ['<div class="drawdiff-revision-block">']
+    parts.append("<h4>Added in revised</h4>")
+    if added:
+        parts.append("<ul>" + "".join(f"<li>{_esc(e)}</li>" for e in added) + "</ul>")
+    else:
+        parts.append('<p><em>No revision entries added.</em></p>')
+    parts.append("<h4>Removed from original</h4>")
+    if removed:
+        parts.append("<ul>" + "".join(f"<li>{_esc(e)}</li>" for e in removed) + "</ul>")
+    else:
+        parts.append('<p><em>No revision entries removed.</em></p>')
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def _render_drawings_fragment(page_pairs: list[dict],
+                              orphan_orig: list[dict],
+                              orphan_rev: list[dict]) -> str:
+    if not (page_pairs or orphan_orig or orphan_rev):
+        return '<p><em>No annotated drawings available.</em></p>'
+    parts = ['<div class="drawdiff-drawings">']
+    for pair in page_pairs:
+        parts.append(f'<p><strong>Sheet {pair["page_num"]}</strong></p>')
+        parts.append('<div style="display:table;width:100%;margin-bottom:14pt;">')
+        for side, b64 in (("Original", pair["orig_b64"]), ("Revised", pair["rev_b64"])):
+            parts.append('<div style="display:table-cell;width:50%;padding:0 6pt;vertical-align:top;">')
+            parts.append(f'<div style="font-size:9.5pt;color:#555;">{side}</div>')
+            if b64:
+                parts.append(
+                    f'<img style="width:100%;max-width:100%;border:1px solid #ccc;" '
+                    f'src="{b64}" alt="{side} sheet {pair["page_num"]}">'
+                )
+            else:
+                parts.append('<p><em>Not available.</em></p>')
+            parts.append('</div>')
+        parts.append('</div>')
+    for orphan_list, label in ((orphan_orig, "original"), (orphan_rev, "revised")):
+        if not orphan_list:
+            continue
+        parts.append(f'<p><strong>Sheets present in {label} only</strong></p>')
+        for p in orphan_list:
+            parts.append(
+                f'<img style="width:100%;border:1px solid #ccc;margin:4pt 0;" '
+                f'src="{p["b64"]}" alt="{label} sheet {p["page_num"]}">'
+            )
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def _render_changes_fragment(
+    view_sections: list[dict],
+    columns: list[dict],
+    has_zone_column: bool,
+    severity_labels: dict[str, str],
+) -> str:
+    """Render the per-view changes tables using the blueprint's column spec.
+
+    Zone-handling rule (mandatory): if the template has no dedicated zone column,
+    every change description must mention its zone. We prepend "[Zone X] " to
+    the description cell when has_zone_column is False.
+    """
+    if not view_sections:
+        return '<p><em>No per-view differences detected.</em></p>'
+
+    # Find which column index, if any, carries the description role (for zone-injection).
+    desc_index = next(
+        (i for i, c in enumerate(columns) if c["role"] == "description"),
+        None,
+    )
+
+    parts: list[str] = []
+    for view in view_sections:
+        parts.append('<div class="drawdiff-view-section">')
+        parts.append(
+            f'<h3>{_esc(view["label"])} '
+            f'<span style="color:#666;font-size:9pt;text-transform:uppercase;">'
+            f'[{_esc(view["match_type"])}]</span></h3>'
+        )
+        if view["image_b64"]:
+            parts.append(
+                f'<img style="width:100%;margin:6pt 0;" src="{view["image_b64"]}" '
+                f'alt="{_esc(view["label"])}">'
+            )
+
+        if not view["changes"]:
+            parts.append('<p><em>No textual changes recorded for this view.</em></p>')
+            parts.append('</div>')
+            continue
+
+        parts.append('<table class="drawdiff-changes" style="width:100%;border-collapse:collapse;">')
+        parts.append('<thead><tr>')
+        for col in columns:
+            parts.append(f'<th>{_esc(col["header"])}</th>')
+        parts.append('</tr></thead><tbody>')
+
+        for c in view["changes"]:
+            sev_base = str(c.get("severity", "")).rstrip("*")
+            sev_label = severity_labels.get(sev_base, _SEVERITY_DISPLAY.get(sev_base, sev_base))
+            sev_class = "sev-" + _SEVERITY_DISPLAY.get(sev_base, "MINOR").upper()
+            uncertain_star = "*" if str(c.get("severity", "")).endswith("*") else ""
+            zone_text = _fmt_zone(c.get("zone"))
+            description_html = _esc(c.get("rationale", ""))
+
+            # Mandatory zone display: if there's no zone column, prepend it to
+            # the description cell. We only do this when a real zone is known.
+            inject_zone = (
+                not has_zone_column
+                and zone_text != "—"
+                and desc_index is not None
+            )
+            if inject_zone:
+                description_html = (
+                    f'<strong>[Zone {_esc(zone_text)}]</strong> ' + description_html
+                )
+
+            # Footnotes carried as side-channel by the aggregator.
+            for note_field in ("uncertain_note", "dedup_note"):
+                note_val = c.get(note_field)
+                if note_val:
+                    description_html += (
+                        f'<div style="font-size:8.5pt;color:#777;font-style:italic;">'
+                        f'({_esc(note_val)})</div>'
+                    )
+
+            parts.append(f'<tr class="{sev_class}">')
+            for i, col in enumerate(columns):
+                role = col["role"]
+                if role == "severity":
+                    cell = f"<strong>{_esc(sev_label)}{uncertain_star}</strong>"
+                elif role == "field":
+                    cell = _esc(c.get("field", ""))
+                elif role == "orig_value":
+                    cell = _esc(c.get("orig_value") if c.get("orig_value") is not None else "—")
+                elif role == "revised_value":
+                    cell = _esc(c.get("revised_value") if c.get("revised_value") is not None else "—")
+                elif role == "zone":
+                    cell = (
+                        f'<span style="font-family:monospace;font-weight:bold;">'
+                        f'{_esc(zone_text)}</span>'
+                    )
+                elif role == "confidence":
+                    cell = f'{float(c.get("confidence", 0.0)):.2f}'
+                elif role == "description":
+                    cell = description_html
+                else:
+                    cell = ""
+                parts.append(f"<td>{cell}</td>")
+            parts.append("</tr>")
+        parts.append("</tbody></table></div>")
+    return "".join(parts)
+
+
+def _render_blueprint_report(
+    *,
+    job_id: str,
+    part_number: str,
+    notes: str,
+    generated_at: str,
+    summary_dict: dict,
+    orig_title_block: dict,
+    rev_title_block: dict,
+    orig_revision_entries: list,
+    rev_revision_entries: list,
+    view_sections: list[dict],
+    page_pairs: list[dict],
+    orphan_original_pages: list[dict],
+    orphan_revised_pages: list[dict],
+    blueprint: dict,
+) -> str:
+    """Substitute every [[TOKEN]] in blueprint['html_shell'] with a fragment."""
+    severity_labels = {
+        **{"CRITICAL": "Critical", "MAJOR": "Significant", "MINOR": "Minor", "UNCERTAIN": "Review"},
+        **(blueprint.get("severity_labels") or {}),
+    }
+    change_table = blueprint.get("change_table") or {}
+    columns = change_table.get("columns") or [
+        {"header": "Class", "role": "severity"},
+        {"header": "Item", "role": "field"},
+        {"header": "Was", "role": "orig_value"},
+        {"header": "Now", "role": "revised_value"},
+        {"header": "Description", "role": "description"},
+    ]
+    has_zone_column = bool(change_table.get("has_zone_column")) or any(
+        c["role"] == "zone" for c in columns
+    )
+
+    substitutions = {
+        "[[TITLE]]":        _esc(part_number) or "Engineering Change Order",
+        "[[PART_NUMBER]]":  _esc(part_number),
+        "[[JOB_ID]]":       _esc(job_id),
+        "[[GENERATED_AT]]": _esc(generated_at),
+        "[[NOTES]]":        _esc(notes),
+        "[[SUMMARY]]":      _render_summary_fragment(summary_dict, severity_labels),
+        "[[TITLE_BLOCK]]":  _render_title_block_fragment(orig_title_block, rev_title_block),
+        "[[REVISION_BLOCK]]": _render_revision_block_fragment(
+            orig_revision_entries, rev_revision_entries
+        ),
+        "[[DRAWINGS]]": _render_drawings_fragment(
+            page_pairs, orphan_original_pages, orphan_revised_pages
+        ),
+        "[[CHANGES]]": _render_changes_fragment(
+            view_sections, columns, has_zone_column, severity_labels
+        ),
+    }
+
+    html_out = blueprint["html_shell"]
+    for token, fragment in substitutions.items():
+        html_out = html_out.replace(token, fragment)
+    return html_out
+
+
 def generate_report(
     job_id: str,
     changeset: dict,
@@ -127,6 +405,7 @@ def generate_report(
     notes: str,
     view_images: Optional[dict[int, bytes]] = None,
     highlighted_pages: Optional[dict[str, bytes]] = None,
+    blueprint: Optional[dict] = None,
 ) -> bytes:
     """Render the final PDF report.
 
@@ -211,10 +490,28 @@ def generate_report(
         ],
     }
 
-    env = _env()
-    env.filters["sev_display"] = lambda s: _SEVERITY_DISPLAY.get(s, s)
-    template = env.get_template("report.html.j2")
-    html_str = template.render(**ctx)
+    if blueprint is not None and blueprint.get("html_shell"):
+        html_str = _render_blueprint_report(
+            job_id=job_id,
+            part_number=part_number,
+            notes=notes,
+            generated_at=ctx["generated_at"],
+            summary_dict=ctx["summary"],
+            orig_title_block=orig_tb,
+            rev_title_block=rev_tb,
+            orig_revision_entries=ctx["orig_revision_entries"],
+            rev_revision_entries=ctx["rev_revision_entries"],
+            view_sections=view_sections,
+            page_pairs=page_pairs,
+            orphan_original_pages=orphan_original_pages,
+            orphan_revised_pages=orphan_revised_pages,
+            blueprint=blueprint,
+        )
+    else:
+        env = _env()
+        env.filters["sev_display"] = lambda s: _SEVERITY_DISPLAY.get(str(s).rstrip("*"), s)
+        template = env.get_template("report.html.j2")
+        html_str = template.render(**ctx)
 
     pdf_bytes: bytes = HTML(string=html_str).write_pdf()
     log.info("[%s] Generated PDF report (%d bytes)", job_id, len(pdf_bytes))

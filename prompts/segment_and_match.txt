@@ -13,11 +13,11 @@ CRITICAL bounding-box rules:
       - GD&T feature control frames, datum symbols
       - the view label/title (e.g. "SECTION A-A", "SCALE 2:1", "DETAIL C")
       - notes, callouts, surface-finish marks, weld symbols anchored to the view
-  • Pad generously. It is FAR better to over-include surrounding whitespace than to clip a single dimension or leader. Add ~3–5% padding on each side beyond the visible geometry+annotations.
+  • Think of each bbox as "everything that belongs to this view", NOT as a spatial partition of the page. Bboxes are EXPECTED to overlap when two views sit close together — that is correct, not a bug.
+  • Pad VERY generously. It is FAR better to over-include surrounding whitespace (and even parts of an adjacent view) than to clip a single dimension or leader. Add ~5–8% padding on each side beyond the visible geometry+annotations.
+  • Never shrink a bbox to avoid touching a neighbour. If extending the bbox to cover a leader line means it overlaps the next view, that is the right call — a separate stage erases foreign content from each crop later.
   • Do NOT segment the TITLE BLOCK (typically bottom-right) or the REVISION HISTORY BLOCK (typically top-right). Those are handled by a separate pipeline stage.
   • Do NOT segment standalone general-notes blocks, BOM tables, or sheet borders unless they are clearly bound to a specific drawing view.
-  • If two views overlap visually, give each its own bbox even if they share whitespace — bboxes may overlap.
-  • A bbox should NEVER cut through text, a dimension line, or a leader line.
 
 Coordinate system:
   • Bboxes are normalized to the page image: [x0, y0, x1, y1] all in [0.0, 1.0].

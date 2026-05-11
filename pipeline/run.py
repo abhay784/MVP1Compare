@@ -199,7 +199,12 @@ def _process_document(pdf_bytes: bytes, job_id: str, kind: str) -> dict:
 # RQ entry point
 # ---------------------------------------------------------------------------
 
-def run_comparison(job_id: str, part_number: str, notes: str) -> None:
+def run_comparison(
+    job_id: str,
+    part_number: str,
+    notes: str,
+    has_template: bool = False,
+) -> None:
     """Top-level function enqueued by POST /compare and executed by the RQ worker.
 
     Stages:
@@ -404,6 +409,18 @@ def run_comparison(job_id: str, part_number: str, notes: str) -> None:
                 highlight_page(page_png, view_diffs_dicts, rev_views_by_page.get(pi, []), "revised")
             )
 
+        blueprint_dict: dict | None = None
+        if has_template:
+            try:
+                template_bytes = _download(config.s3_artifact_key(job_id, "template"))
+                from pipeline.template_blueprint import extract_blueprint
+                bp = extract_blueprint(template_bytes)
+                if bp is not None:
+                    blueprint_dict = bp.model_dump()
+                    _upload_json(f"metadata/{job_id}/blueprint.json", blueprint_dict)
+            except Exception as exc:  # noqa: BLE001 — fall back to default layout
+                log.warning("[%s] Template fetch/extract failed: %s — using default layout", job_id, exc)
+
         pdf_bytes = generate_report(
             job_id=job_id,
             changeset=changeset_dict,
@@ -412,6 +429,7 @@ def run_comparison(job_id: str, part_number: str, notes: str) -> None:
             notes=notes,
             view_images=view_images,
             highlighted_pages={"original": orig_highlighted_pages, "revised": rev_highlighted_pages},
+            blueprint=blueprint_dict,
         )
 
         report_key = config.s3_artifact_key(job_id, "report")

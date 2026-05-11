@@ -273,3 +273,161 @@ def test_run_publishes_canonical_changeset_and_calls_complete(monkeypatch, mixed
     assert f"metadata/{job_id}/changeset.json" in uploaded  # internal
     assert completed[job_id].critical == 1
     assert completed[job_id].significant == 2
+
+
+# ---------------------------------------------------------------------------
+# Blueprint-driven rendering
+# ---------------------------------------------------------------------------
+
+def test_generator_blueprint_fills_html_shell(stub_pdf, mixed_changeset, extraction):
+    """When a blueprint is provided, [[TOKENS]] in html_shell are substituted."""
+    blueprint = {
+        "html_shell": (
+            "<!DOCTYPE html><html><head><style>"
+            ".sev-CRITICAL{background:#fde2e2;}"
+            ".sev-SIGNIFICANT{background:#fff1d6;}"
+            ".sev-MINOR{background:#eceff1;}"
+            ".sev-UNCERTAIN{background:#fff8c4;}"
+            "</style></head><body>"
+            "<h1>ENGINEERING CHANGE ORDER</h1>"
+            "<p>ECO #: [[JOB_ID]] | Part: [[PART_NUMBER]] | Issued: [[GENERATED_AT]]</p>"
+            "<h2>Change Classification</h2>[[SUMMARY]]"
+            "<h2>Affected Drawing Fields</h2>[[TITLE_BLOCK]]"
+            "<h2>Detailed Changes</h2>[[CHANGES]]"
+            "</body></html>"
+        ),
+        "change_table": {
+            "columns": [
+                {"header": "Class",                 "role": "severity"},
+                {"header": "Item",                  "role": "field"},
+                {"header": "Was",                   "role": "orig_value"},
+                {"header": "Now",                   "role": "revised_value"},
+                {"header": "Description of Change", "role": "description"},
+            ],
+            "has_zone_column": False,
+        },
+        "severity_labels": {
+            "CRITICAL":  "Class A",
+            "MAJOR":     "Class B",
+            "MINOR":     "Class C",
+            "UNCERTAIN": "Review",
+        },
+    }
+    pdf = generator.generate_report(
+        job_id="job-1",
+        changeset=mixed_changeset,
+        extraction=extraction,
+        part_number="P-001",
+        notes="",
+        view_images={0: _png_bytes(), 1: _png_bytes()},
+        blueprint=blueprint,
+    )
+    assert pdf.startswith(b"%PDF")
+    (args, kwargs) = stub_pdf.call_args
+    html = kwargs.get("string") or args[0]
+    # The customer's shell text is preserved verbatim.
+    assert "ENGINEERING CHANGE ORDER" in html
+    assert "Change Classification" in html
+    assert "Detailed Changes" in html
+    # Token-substituted values appear.
+    assert "P-001" in html
+    assert "job-1" in html
+    # Custom severity labels replace defaults.
+    assert "Class A" in html
+    assert "Class B" in html
+    # Custom column header in change table.
+    assert "Description of Change" in html
+    # All known tokens are substituted (none left in output).
+    for tok in ("[[JOB_ID]]", "[[PART_NUMBER]]", "[[SUMMARY]]", "[[TITLE_BLOCK]]", "[[CHANGES]]"):
+        assert tok not in html
+
+
+def test_generator_blueprint_injects_zone_into_description_when_no_zone_column(
+    stub_pdf, extraction
+):
+    """If the template has no zone column, every change description must include its zone."""
+    changeset = {
+        "job_id": "job-z",
+        "view_diffs": [
+            {
+                "label": "FRONT", "match_type": "matched",
+                "orig_index": 0, "rev_index": 0,
+                "changes": [
+                    {
+                        "field": "bore", "orig_value": "Ø10", "revised_value": "Ø12",
+                        "severity": "MAJOR", "confidence": 0.9,
+                        "rationale": "Bore widened.",
+                        "zone": "C-4",
+                    },
+                ],
+            },
+        ],
+    }
+    blueprint = {
+        "html_shell": "<!DOCTYPE html><html><body>[[CHANGES]]</body></html>",
+        "change_table": {
+            "columns": [
+                {"header": "Class",       "role": "severity"},
+                {"header": "Item",        "role": "field"},
+                {"header": "Was",         "role": "orig_value"},
+                {"header": "Now",         "role": "revised_value"},
+                {"header": "Description", "role": "description"},
+            ],
+            "has_zone_column": False,
+        },
+        "severity_labels": {},
+    }
+    generator.generate_report(
+        "job-z", changeset, extraction, "P-001", "",
+        view_images={0: _png_bytes()},
+        blueprint=blueprint,
+    )
+    (args, kwargs) = stub_pdf.call_args
+    html = kwargs.get("string") or args[0]
+    # Zone is prepended to the description cell when there is no dedicated zone column.
+    assert "[Zone C-4]" in html
+    assert "Bore widened." in html
+
+
+def test_generator_blueprint_uses_zone_column_when_present(stub_pdf, extraction):
+    """If the template declares a zone column, render zone there, not in description."""
+    changeset = {
+        "job_id": "job-zc",
+        "view_diffs": [
+            {
+                "label": "FRONT", "match_type": "matched",
+                "orig_index": 0, "rev_index": 0,
+                "changes": [
+                    {
+                        "field": "bore", "orig_value": "Ø10", "revised_value": "Ø12",
+                        "severity": "MAJOR", "confidence": 0.9,
+                        "rationale": "Bore widened.",
+                        "zone": "C-4",
+                    },
+                ],
+            },
+        ],
+    }
+    blueprint = {
+        "html_shell": "<!DOCTYPE html><html><body>[[CHANGES]]</body></html>",
+        "change_table": {
+            "columns": [
+                {"header": "Class",       "role": "severity"},
+                {"header": "Item",        "role": "field"},
+                {"header": "Location",    "role": "zone"},
+                {"header": "Description", "role": "description"},
+            ],
+            "has_zone_column": True,
+        },
+        "severity_labels": {},
+    }
+    generator.generate_report(
+        "job-zc", changeset, extraction, "P-001", "",
+        view_images={0: _png_bytes()},
+        blueprint=blueprint,
+    )
+    (args, kwargs) = stub_pdf.call_args
+    html = kwargs.get("string") or args[0]
+    assert "C-4" in html
+    # When a zone column exists, we do NOT prepend [Zone …] to description.
+    assert "[Zone C-4]" not in html

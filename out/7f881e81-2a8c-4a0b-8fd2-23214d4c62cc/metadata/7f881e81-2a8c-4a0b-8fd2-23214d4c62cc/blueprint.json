@@ -1,0 +1,74 @@
+{
+  "title": "Engineering Change Order (ECO)",
+  "header_fields": [
+    {
+      "label": "ECO Number",
+      "source": "job_id",
+      "value": null
+    },
+    {
+      "label": "Project / Product Name",
+      "source": "notes",
+      "value": null
+    },
+    {
+      "label": "Prepared By",
+      "source": "custom",
+      "value": null
+    },
+    {
+      "label": "Date Submitted",
+      "source": "generated_at",
+      "value": null
+    },
+    {
+      "label": "Revision Number",
+      "source": "custom",
+      "value": null
+    },
+    {
+      "label": "Priority Level",
+      "source": "custom",
+      "value": null
+    },
+    {
+      "label": "Departments Affected",
+      "source": "custom",
+      "value": null
+    }
+  ],
+  "sections": [
+    {
+      "id": "title_block",
+      "heading": "Document Information"
+    },
+    {
+      "id": "summary",
+      "heading": "Change Summary"
+    },
+    {
+      "id": "view_changes",
+      "heading": "List of Changes"
+    },
+    {
+      "id": "annotated_drawings",
+      "heading": "Supporting Images / Diagrams"
+    },
+    {
+      "id": "revision_block",
+      "heading": "Impact Analysis"
+    }
+  ],
+  "change_table_columns": [
+    "#",
+    "Component / Area",
+    "Description of Change"
+  ],
+  "severity_labels": {
+    "CRITICAL": "Critical",
+    "MAJOR": "Significant",
+    "MINOR": "Minor",
+    "UNCERTAIN": "Review"
+  },
+  "tone": "formal"
+}

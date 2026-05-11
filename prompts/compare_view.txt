@@ -18,7 +18,7 @@ before or after, no trailing commentary. The schema is:
       "revised_value": "string or null — the value on the REVISED side (null if the element was removed)",
       "severity": "CRITICAL | MAJOR | MINOR",
       "confidence": 0.0,
-      "rationale": "one sentence explaining what changed and why it matters",
+      "rationale": "ONE short sentence (≤ 20 words). No semicolons. No compound clauses. No leading qualifiers like 'It appears that' or 'The drawing shows'. State the change directly.",
       "orig_bbox": [x0, y0, x1, y1] | null,
       "rev_bbox":  [x0, y0, x1, y1] | null
     }
@@ -66,3 +66,9 @@ RULES
   • orig_value and revised_value should quote the drawing literally when
     possible (e.g. "Ø12.50 ±0.05"). Use null only for add/remove cases.
   • JSON only. Any prose outside the JSON object is a protocol violation.
+
+RATIONALE STYLE
+  • Each rationale MUST be a single sentence of 20 words or fewer.
+  • State the concrete change. Example: "Hole diameter increased from Ø10 to Ø12."
+  • Do NOT write multi-sentence explanations, hedges, or commentary about the
+    rest of the drawing. One change, one sentence, terminated by a period.

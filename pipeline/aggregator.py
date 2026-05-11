@@ -113,9 +113,10 @@ def _cross_view_dedup(view_diffs: list[dict]) -> list[dict]:
             else:
                 win_vi, win_ci = winner_triples[triple]
                 if vi == win_vi and ci == win_ci:
-                    # This is the winner — prefix its rationale.
+                    # Winner kept as-is; we record the dedup fact on a side field
+                    # so the visible rationale stays a single clean sentence.
                     ch = dict(ch)
-                    ch["rationale"] = "[deduped across views] " + ch.get("rationale", "")
+                    ch["dedup_note"] = "deduped across views"
                     new_changes.append(ch)
                 # else: discard the duplicate
         result.append({**vd, "changes": new_changes})
@@ -176,7 +177,7 @@ def _promote_uncertain(view_diffs: list[dict]) -> list[dict]:
                     # Pick the strongest (highest confidence) promoter.
                     other_label, _, _ = max(others, key=lambda x: x[2])
                     ch["severity"] = "UNCERTAIN*"
-                    ch["rationale"] = ch.get("rationale", "") + f" [possible match: {other_label}]"
+                    ch["uncertain_note"] = f"possible match: {other_label}"
             new_changes.append(ch)
         result.append({**vd, "changes": new_changes})
 

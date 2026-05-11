@@ -40,6 +40,10 @@ def health():
 async def post_compare(
     original: UploadFile = File(..., description="Original revision PDF"),
     revised: UploadFile = File(..., description="Revised revision PDF"),
+    template: UploadFile | None = File(
+        default=None,
+        description="Optional template change-order PDF whose layout the report mimics.",
+    ),
     part_number: str | None = Form(default=None),
     notes: str | None = Form(default=None),
     authorization: str | None = Header(default=None),
@@ -51,6 +55,20 @@ async def post_compare(
             raise HTTPException(
                 status_code=422,
                 detail=f"Unsupported file type '{upload.content_type}'. Accepted: PDF, TIFF, PNG.",
+            )
+
+    template_bytes: bytes | None = None
+    if template is not None and template.filename:
+        if template.content_type != "application/pdf":
+            raise HTTPException(
+                status_code=422,
+                detail="Template must be a PDF (application/pdf).",
+            )
+        template_bytes = await template.read()
+        if len(template_bytes) > _MAX_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail=f"'template' exceeds the {config.max_file_size_mb} MB limit.",
             )
 
     original_bytes = await original.read()
@@ -67,6 +85,8 @@ async def post_compare(
     create_job(job_id)
     stage_upload(job_id, "original", original_bytes)
     stage_upload(job_id, "revised", revised_bytes)
+    if template_bytes is not None:
+        stage_upload(job_id, "template", template_bytes)
 
     rq = Queue(connection=redis_lib.from_url(config.redis_url))
     rq.enqueue(
@@ -74,6 +94,7 @@ async def post_compare(
         job_id,
         part_number or "",
         notes or "",
+        template_bytes is not None,
         job_id=job_id,
     )
 

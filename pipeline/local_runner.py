@@ -36,6 +36,8 @@ from pipeline.extractor import extract_dimensions, extract_revision_block, extra
 from pipeline.highlighter import highlight_page
 from pipeline.llm_segmenter import LLMMatch, segment_and_match
 from pipeline.parser import ParsedPage, parse_pdf
+from pipeline.template_blueprint import extract_blueprint
+from pipeline.view_isolator import isolate_match_crops
 from report.generator import count_summary, generate_report
 
 log = logging.getLogger(__name__)
@@ -231,6 +233,7 @@ def _build_side_views(
     kind: str,                     # "original" | "revised"
     matches: list[LLMMatch],
     parsed: _ParsedDoc,
+    isolated_crops: dict[int, np.ndarray] | None = None,
 ) -> tuple[list[dict], dict[int, int]]:
     """Persist per-view crops for one side and build its view_metadata list.
 
@@ -250,8 +253,11 @@ def _build_side_views(
         if bbox_norm is None:
             continue  # this match has no view on this side (added/removed)
 
-        page_image = parsed.pages[m.page_index].image
-        crop = _crop_norm(page_image, bbox_norm)
+        if isolated_crops is not None and mi in isolated_crops:
+            crop = isolated_crops[mi]
+        else:
+            page_image = parsed.pages[m.page_index].image
+            crop = _crop_norm(page_image, bbox_norm)
 
         crop_key = f"crops/{job_id}/{kind}/view_{next_index:02d}.png"
         _write_image(job_dir, crop_key, crop)
@@ -397,6 +403,7 @@ def run_comparison_local(
     part_number: str,
     notes: str,
     job_dir: Path,
+    template_pdf: bytes | None = None,
 ) -> dict:
     """Run the full DrawDiff pipeline locally."""
     job_dir = Path(job_dir)
@@ -408,6 +415,8 @@ def run_comparison_local(
 
         _write_bytes(job_dir, config.s3_artifact_key(job_id, "original"), original_pdf)
         _write_bytes(job_dir, config.s3_artifact_key(job_id, "revised"), revised_pdf)
+        if template_pdf is not None:
+            _write_bytes(job_dir, config.s3_artifact_key(job_id, "template"), template_pdf)
 
         _stage(job_id, "parsing (original)", 15)
         orig_parsed = _parse_document(original_pdf, job_id, "original", job_dir)
@@ -421,12 +430,27 @@ def run_comparison_local(
         )
         log.info("[%s] LLM produced %d view match(es)", job_id, len(matches))
 
-        _stage(job_id, "snapping bboxes to text", 65)
-        _snap_match_bboxes_to_text(matches, orig_parsed, rev_parsed)
+        if config.use_view_isolator:
+            _stage(job_id, "isolating views (erase foreign content)", 65)
+            orig_isolated = isolate_match_crops(
+                matches, orig_parsed.pages, orig_parsed.page_dims_pt, original_pdf, "original",
+            )
+            rev_isolated = isolate_match_crops(
+                matches, rev_parsed.pages, rev_parsed.page_dims_pt, revised_pdf, "revised",
+            )
+        else:
+            _stage(job_id, "snapping bboxes to text", 65)
+            _snap_match_bboxes_to_text(matches, orig_parsed, rev_parsed)
+            orig_isolated = None
+            rev_isolated = None
 
         _stage(job_id, "writing crops + extraction", 70)
-        orig_views, orig_m2v = _build_side_views(job_id, job_dir, "original", matches, orig_parsed)
-        rev_views,  rev_m2v  = _build_side_views(job_id, job_dir, "revised",  matches, rev_parsed)
+        orig_views, orig_m2v = _build_side_views(
+            job_id, job_dir, "original", matches, orig_parsed, orig_isolated,
+        )
+        rev_views,  rev_m2v  = _build_side_views(
+            job_id, job_dir, "revised",  matches, rev_parsed,  rev_isolated,
+        )
 
         orig_doc_payload = _doc_payload(orig_parsed, orig_views)
         rev_doc_payload  = _doc_payload(rev_parsed,  rev_views)
@@ -539,6 +563,18 @@ def run_comparison_local(
                 _write_bytes(job_dir, f"highlighted/revised_p{pi:02d}.png", png)
             )
 
+        blueprint_dict: dict | None = None
+        if template_pdf is not None:
+            _stage(job_id, "extracting template blueprint", 92)
+            bp = extract_blueprint(template_pdf)
+            if bp is not None:
+                blueprint_dict = bp.model_dump()
+                _write_json(
+                    job_dir,
+                    f"metadata/{job_id}/blueprint.json",
+                    blueprint_dict,
+                )
+
         pdf_bytes = generate_report(
             job_id=job_id,
             changeset=changeset_dict,
@@ -547,6 +583,7 @@ def run_comparison_local(
             notes=notes,
             view_images=view_images,
             highlighted_pages={"original": orig_highlighted_pages, "revised": rev_highlighted_pages},
+            blueprint=blueprint_dict,
         )
 
         report_path     = _write_bytes(job_dir, "report.pdf", pdf_bytes)

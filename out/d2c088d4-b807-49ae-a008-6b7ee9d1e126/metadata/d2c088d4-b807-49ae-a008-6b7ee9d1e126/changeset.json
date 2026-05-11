@@ -1,0 +1,425 @@
+{
+  "job_id": "d2c088d4-b807-49ae-a008-6b7ee9d1e126",
+  "view_diffs": [
+    {
+      "label": "title_block",
+      "match_type": "title_block",
+      "changes": [
+        {
+          "field": "revision",
+          "orig_value": "TS",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 1.0,
+          "rationale": "title_block.revision changed from 'TS' to None",
+          "orig_bbox": null,
+          "rev_bbox": null,
+          "orig_bbox_pt": [],
+          "rev_bbox_pt": [],
+          "orig_zone": "Title Block",
+          "rev_zone": "Title Block",
+          "zone": "Title Block"
+        }
+      ],
+      "orig_index": null,
+      "rev_index": null
+    },
+    {
+      "label": "revision_block",
+      "match_type": "revision_block",
+      "changes": [],
+      "orig_index": null,
+      "rev_index": null
+    },
+    {
+      "label": "ISO_LEFT",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "Upper hinge knuckle with flat/stepped top surface and raised cylindrical boss",
+          "revised_value": "Upper hinge knuckle with smooth curved/filleted top surface \u2014 raised boss removed",
+          "severity": "CRITICAL",
+          "confidence": 0.82,
+          "rationale": "The raised cylindrical boss on the upper hinge knuckle is removed in the revised drawing.",
+          "orig_bbox": [
+            0.27,
+            0.05,
+            0.62,
+            0.32
+          ],
+          "rev_bbox": [
+            0.27,
+            0.05,
+            0.62,
+            0.32
+          ],
+          "orig_bbox_pt": [
+            [
+              573.4887365966797,
+              99.792,
+              721.0598902832031,
+              210.98880000000003
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              573.4887365966797,
+              99.792,
+              721.0598902832031,
+              210.98880000000003
+            ]
+          ],
+          "orig_zone": "A4",
+          "rev_zone": "A4",
+          "zone": "A4"
+        }
+      ],
+      "orig_index": 0,
+      "rev_index": 0
+    },
+    {
+      "label": "ISO_RIGHT",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "geometry",
+          "orig_value": "sharp corner at upper-left top edge of main body",
+          "revised_value": "rounded/filleted corner at upper-left top edge of main body",
+          "severity": "MAJOR",
+          "confidence": 0.78,
+          "rationale": "The upper-left corner of the top body face changed from sharp to filleted in the revised drawing.",
+          "orig_bbox": [
+            0.17,
+            0.13,
+            0.35,
+            0.32
+          ],
+          "rev_bbox": [
+            0.17,
+            0.13,
+            0.35,
+            0.32
+          ],
+          "orig_bbox_pt": [
+            [
+              867.1207099609376,
+              132.7392,
+              942.8485205078125,
+              210.98880000000003
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              867.1207099609376,
+              132.7392,
+              942.8485205078125,
+              210.98880000000003
+            ]
+          ],
+          "orig_zone": "A3",
+          "rev_zone": "A3",
+          "zone": "A3"
+        },
+        {
+          "field": "feature",
+          "orig_value": "countersunk/counterbored hole visible at upper-left of top face",
+          "revised_value": null,
+          "severity": "MAJOR",
+          "confidence": 0.72,
+          "rationale": "A hole feature visible on the top-left face in the original is absent in the revised view.",
+          "orig_bbox": [
+            0.18,
+            0.22,
+            0.32,
+            0.38
+          ],
+          "rev_bbox": null,
+          "orig_bbox_pt": [
+            [
+              871.3278105468751,
+              169.8048,
+              930.22721875,
+              235.69920000000002
+            ]
+          ],
+          "rev_bbox_pt": [],
+          "orig_zone": "B3",
+          "rev_zone": "",
+          "zone": "B3"
+        }
+      ],
+      "orig_index": 1,
+      "rev_index": 1
+    },
+    {
+      "label": "SECTION B-B",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "callout",
+          "orig_value": "R .030 ALL AROUND",
+          "revised_value": "4X R .030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "Radius callout changed from ALL AROUND to 4X discrete count specification.",
+          "orig_bbox": [
+            0.55,
+            0.52,
+            0.95,
+            0.6
+          ],
+          "rev_bbox": [
+            0.55,
+            0.52,
+            0.9,
+            0.58
+          ],
+          "orig_bbox_pt": [
+            [
+              198.24978735351561,
+              350.709637890625,
+              315.7259963378906,
+              388.82496679687495
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              198.288,
+              344.9855053710937,
+              301.10400000000004,
+              374.1609851074219
+            ]
+          ],
+          "orig_zone": "B7",
+          "rev_zone": "B7",
+          "zone": "B7"
+        },
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "TAP",
+          "severity": "MAJOR",
+          "confidence": 0.9,
+          "rationale": "New TAP annotation added to the upper right of the revised view.",
+          "orig_bbox": null,
+          "rev_bbox": [
+            0.78,
+            0.01,
+            0.98,
+            0.05
+          ],
+          "orig_bbox_pt": [],
+          "rev_bbox_pt": [
+            [
+              265.8528,
+              96.99392761230469,
+              324.60479999999995,
+              116.44424743652344
+            ]
+          ],
+          "orig_zone": "",
+          "rev_zone": "A7",
+          "zone": "A7"
+        },
+        {
+          "field": "geometry",
+          "orig_value": "upper pocket has no visible corner radii at bottom corners",
+          "revised_value": "upper pocket bottom corners show rounded radii",
+          "severity": "MAJOR",
+          "confidence": 0.75,
+          "rationale": "Upper slot pocket bottom corners appear to have added radii in the revised view.",
+          "orig_bbox": [
+            0.38,
+            0.28,
+            0.65,
+            0.5
+          ],
+          "rev_bbox": [
+            0.38,
+            0.28,
+            0.65,
+            0.5
+          ],
+          "orig_bbox_pt": [
+            [
+              148.32239853515625,
+              236.363651171875,
+              227.61883959960937,
+              341.1808056640625
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              148.34879999999998,
+              228.28358642578127,
+              227.664,
+              335.2603454589844
+            ]
+          ],
+          "orig_zone": "B7",
+          "rev_zone": "B7",
+          "zone": "B7"
+        }
+      ],
+      "orig_index": 2,
+      "rev_index": 2
+    },
+    {
+      "label": "FRONT_VIEW",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "note",
+          "orig_value": "TAP FOR #4-40 HELICOIL",
+          "revised_value": "FOR #4-40 HELICAL INSERTS",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "Thread insert callout changed from HELICOIL to HELICAL INSERTS terminology.",
+          "orig_bbox": [
+            0.03,
+            0.08,
+            0.35,
+            0.2
+          ],
+          "rev_bbox": [
+            0.0,
+            0.02,
+            0.35,
+            0.13
+          ],
+          "orig_bbox_pt": [
+            [
+              348.6515954589844,
+              89.11905429687499,
+              543.2230407714844,
+              151.5176357421875
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              330.48,
+              57.8995169921875,
+              543.268201171875,
+              114.98686044921875
+            ]
+          ],
+          "orig_zone": "A6",
+          "rev_zone": "A6",
+          "zone": "A6"
+        },
+        {
+          "field": "annotation",
+          "orig_value": "16X R.030",
+          "revised_value": "8X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.9,
+          "rationale": "Corner radius R.030 quantity reduced from 16X to 8X.",
+          "orig_bbox": [
+            0.0,
+            0.25,
+            0.22,
+            0.32
+          ],
+          "rev_bbox": [
+            0.14,
+            0.19,
+            0.32,
+            0.26
+          ],
+          "orig_bbox_pt": [
+            [
+              330.4105224609375,
+              177.51704467773436,
+              464.17839111328124,
+              213.91621718750002
+            ]
+          ],
+          "rev_bbox_pt": [
+            [
+              415.59528046875005,
+              146.12541142578124,
+              525.0292125000001,
+              182.4537208984375
+            ]
+          ],
+          "orig_zone": "A6",
+          "rev_zone": "A5",
+          "zone": "A5"
+        }
+      ],
+      "orig_index": 3,
+      "rev_index": 3
+    },
+    {
+      "label": "SECTION A-A",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "annotation",
+          "orig_value": null,
+          "revised_value": "(4X R.030)",
+          "severity": "MAJOR",
+          "confidence": 0.95,
+          "rationale": "New callout (4X R.030) added identifying four corner radii on the slot features.",
+          "orig_bbox": null,
+          "rev_bbox": [
+            0.08,
+            0.42,
+            0.42,
+            0.52
+          ],
+          "orig_bbox_pt": [],
+          "rev_bbox_pt": [
+            [
+              943.48625,
+              284.29599409179684,
+              1047.154375,
+              333.596684765625
+            ]
+          ],
+          "orig_zone": "",
+          "rev_zone": "B2",
+          "zone": "B2"
+        }
+      ],
+      "orig_index": 4,
+      "rev_index": 4
+    },
+    {
+      "label": "SECTION C-C",
+      "match_type": "matched",
+      "changes": [
+        {
+          "field": "callout",
+          "orig_value": null,
+          "revised_value": "4X R.030",
+          "severity": "MAJOR",
+          "confidence": 0.92,
+          "rationale": "A new radius callout 4X R.030 was added to the section view corners.",
+          "orig_bbox": null,
+          "rev_bbox": [
+            0.52,
+            0.13,
+            0.72,
+            0.42
+          ],
+          "orig_bbox_pt": [],
+          "rev_bbox_pt": [
+            [
+              731.4624000000001,
+              584.8459137451172,
+              885.6864,
+              645.9772758300782
+            ]
+          ],
+          "orig_zone": "",
+          "rev_zone": "D3",
+          "zone": "D3"
+        }
+      ],
+      "orig_index": 5,
+      "rev_index": 5
+    }
+  ]
+}
